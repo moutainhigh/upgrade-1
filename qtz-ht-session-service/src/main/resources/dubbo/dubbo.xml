@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	<!-- 提供方应用信息，用于计算依赖关系 -->
+	<dubbo:application name="qtz-ht-session-service" />
+
+	<!-- 使用zookeeper注册中心暴露服务地址 -->
+	<dubbo:registry protocol="zookeeper" address="${zookeeper.servers}" file="${dubbo.registry.file}"  />
+	<!-- 用dubbo协议在20880端口暴露服务,如果冲突会自增 -->
+	<dubbo:protocol name="dubbo" port="${dubbo.port}" threads="${dubbo.threads}"/>
+
+	<!--###############################声明需要引用的服务接口############################################ -->
+	<dubbo:consumer version="1.0.0"/>
+	<!-- 地区 -->
+	<dubbo:reference interface="com.qtz.member.spi.user.service.RegionService" id="regionServiceImpl" check="false"/>
+	<dubbo:reference interface="com.qtz.id.spi.IdService" id="idServiceImpl" check="false"/>	
+	<!--###############################声明需要引用的服务接口############################################ -->
+	
+	<!--###############################声明需要暴露的服务接口############################################ -->
+	<dubbo:provider version="1.0.0" timeout="10000" />
+	<!-- 登录 -->
+	<dubbo:service interface="com.qtz.ht.session.spi.session.service.SessionService" ref="sessionServiceImpl"  />
+	<!-- 用户 -->
+	<dubbo:service interface="com.qtz.ht.session.spi.user.service.HtBusinessService" ref="htBusinessServiceImpl" timeout="3000" retries="0"/>
+	<dubbo:service interface="com.qtz.ht.session.spi.user.service.HtBusinessLogService" ref="htBusinessLogServiceImpl" timeout="3000" retries="0"/>
+	<dubbo:service interface="com.qtz.ht.session.spi.user.service.HtMenuService" ref="htMenuServiceImpl" timeout="3000" retries="0"/>
+	<dubbo:service interface="com.qtz.ht.session.spi.user.service.HtRoleMenuService" ref="htRoleMenuServiceImpl" timeout="3000" retries="0"/>
+	<dubbo:service interface="com.qtz.ht.session.spi.user.service.HtRoleService" ref="htRoleServiceImpl" timeout="3000" retries="0"/>
+	<dubbo:service interface="com.qtz.ht.session.spi.user.service.HtUserRoleService" ref="htUserRoleServiceImpl" timeout="3000" retries="0"/>
+	<dubbo:service interface="com.qtz.ht.session.spi.user.service.HtUserService" ref="htUserServiceImpl" timeout="3000" retries="0"/>
+	<dubbo:service interface="com.qtz.ht.session.spi.user.service.HtStaffService" ref="htStaffServiceImpl" timeout="3000" retries="0"/>
+	<!-- 钱包 -->
+	<dubbo:service interface="com.qtz.ht.session.spi.wallet.service.HtBankCardService" ref="htBankCardServiceImpl" timeout="3000" retries="0"/>
+	<dubbo:service interface="com.qtz.ht.session.spi.wallet.service.HtCheckRecordService" ref="htCheckRecordServiceImpl" timeout="3000" retries="0"/>
+	<dubbo:service interface="com.qtz.ht.session.spi.wallet.service.HtPlatformWalletLogService" ref="htPlatformWalletLogServiceImpl" timeout="3000" retries="0"/>
+	<dubbo:service interface="com.qtz.ht.session.spi.wallet.service.HtStaffPaymentFlowService" ref="htStaffPaymentFlowServiceImpl" timeout="3000" retries="0"/>
+	<dubbo:service interface="com.qtz.ht.session.spi.wallet.service.HtWalletService" ref="htWalletServiceImpl" timeout="3000" retries="0"/>
+	<!--###############################声明需要暴露的服务接口############################################ -->
+</beans>

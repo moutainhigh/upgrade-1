@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qtz.ht.order.service.order.dao.OrderDao" >
+<!-- 开启缓存 -->
+<cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
+
+<!-- Result Map com.qtz.ht.order.spi.order.vo.HtOrder 改造-->
+
+<resultMap id="BaseResultMap" type="com.qtz.ht.order.spi.order.vo.HtOrder" >
+
+<result column="dm_id"  property="dmId"/> 
+<result column="batch_id"  property="batchId"/> 
+<result column="staff_code"  property="staffCode"/> 
+<result column="staff_name"  property="staffName"/> 
+<result column="vip_code"  property="vipCode"/> 
+<result column="vip_name"  property="vipName"/> 
+<result column="goodt_money"  property="goodtMoney"/> 
+<result column="count_money"  property="countMoney"/> 
+<result column="pay_money"  property="payMoney"/> 
+<result column="payment_way"  property="paymentWay"/> 
+<result column="recipt_type"  property="reciptType"/> 
+<result column="crtime"  property="crtime"/> 
+<result column="pay_time"  property="payTime"/> 
+<result column="consignee"  property="consignee"/> 
+<result column="detail_addr"  property="detailAddr"/> 
+<result column="house_number"  property="houseNumber"/> 
+<result column="mphone_no"  property="mphoneNo"/> 
+<result column="status"  property="status"/> 
+<result column="source_type"  property="sourceType"/> 
+<result column="note_man"  property="noteMan"/> 
+<result column="three_serial_number"  property="threeSerialNumber"/> 
+<result column="goods_num"  property="goodsNum"/> 
+<result column="express"  property="express"/>
+<result column="express_code"  property="expressCode"/>
+<result column="delivery_time"  property="deliveryTime"/>
+<result column="complete_time" property="completeTime"/>
+<result column="user_deliver" property="userDeliver"/>
+<result column="note_vip" property="noteVip"/>
+<result column="id_card" property="idCard"/>
+<result column="category_id" property="categoryId"/>
+<result column="deduction_price" property="deductionPrice"/>
+<result column="discount_percent" property="discountPercent"/>
+<result column="constant_name" property="constantName"/>
+<result column="constant_key" property="constantKey"/>
+<result column="final_money" property="finalMoney"/>
+<result column="hide_id_card" property="hideIdCard"/>
+</resultMap>
+
+<!-- order table all fields 改造-->
+
+<sql id="Base_Column_List" >
+
+	 t.dm_id,t.batch_id,t.staff_code,t.staff_name,t.vip_code,t.vip_name,t.goodt_money,t.count_money,t.pay_money,t.payment_way,t.pay_type,t.pay_time,t.send_type,t.recipt_type,t.crtime,t.consignee,t.detail_addr,t.house_number,t.mphone_no,t.status,t.source_type,t.note_man,t.three_serial_number,t.goods_num,t.express,t.express_code,t.delivery_time,t.complete_time,t.user_deliver,t.note_vip,t.category_id,t.id_card,t.category_id,t.deduction_price,t.discount_percent,t.constant_name,t.constant_key,t.final_money,t.hide_id_card
+
+</sql>
+
+<!-- 查询条件 改造-->
+
+<sql id="Example_Where_Clause">
+
+<where>
+
+	<if test="dmId != null and dmId != '' ">
+		 and t.dm_id=#{dmId}
+	</if>
+	<if test="batchId != null and batchId != '' ">
+		 and t.batch_id=#{batchId}
+	</if>
+	<if test="staffCode != null and staffCode != '' ">
+		 and t.staff_code=#{staffCode}
+	</if>
+	<if test="vipCode != null and vipCode != '' ">
+		 and t.vip_code=#{vipCode}
+	</if>
+	<if test="status != null and status != '' ">
+		 and t.status=#{status}
+	</if>
+
+</where>
+
+</sql>
+
+<!--改造 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" useGeneratedKeys="true" keyProperty="id">] -->
+
+<insert id="addVo" parameterType="Object" >
+
+  insert into ht_order (dm_id,batch_id,staff_code,staff_name,vip_code,vip_name,goodt_money,count_money,pay_money,payment_way,recipt_type,crtime,consignee,detail_addr,house_number,mphone_no,status,source_type,note_man,goods_num,note_vip,id_card,category_id,final_money,hide_id_card)
+ values(#{dmId},#{batchId},#{staffCode},#{staffName},#{vipCode},#{vipName},#{goodtMoney},#{countMoney},#{payMoney},#{paymentWay},#{reciptType},#{crtime},#{consignee},#{detailAddr},#{houseNumber},#{mphoneNo},#{status},#{sourceType},#{noteMan},#{goodsNum},#{noteVip},#{idCard},#{categoryId},#{finalMoney},#{hideIdCard})
+
+</insert>
+
+<!--批量插入记录 改造-->
+
+<insert id="addList" parameterType="java.util.List">
+
+  insert into ht_order (dm_id,batch_id,staff_code,staff_name,vip_code,vip_name,goodt_money,count_money,pay_money,payment_way,recipt_type,crtime,consignee,detail_addr,house_number,mphone_no,status,source_type,note_man,goods_num,note_vip,id_card,category_id,final_money,hide_id_card) values
+
+   <foreach collection="list" item="item" index="index" separator=",">
+
+	  (
+	  	 #{item.dmId},#{item.batchId},#{item.staffCode},#{item.staffName},#{item.vipCode},#{item.vipName},#{item.goodtMoney},#{item.countMoney},#{item.payMoney},#{item.paymentWay},#{item.reciptType},#{item.crtime},#{item.consignee},#{item.detailAddr},#{item.houseNumber},#{item.mphoneNo},#{item.status},#{item.sourceType},#{item.noteMan},#{item.goodsNum},#{item.noteVip},#{item.idCard},#{item.categoryId},#{item.finalMoney},#{item.hideIdCard}
+	  )
+
+	  </foreach> 
+
+</insert>
+
+
+<!-- 删除记录 -->
+
+<delete id="delId" parameterType="Object">
+
+	delete 	 from `order` where dmId = #{dmId}
+
+</delete>
+
+<!--批量删除-->
+
+<delete id="delIds" parameterType="java.lang.String">
+
+	delete 	 from `order` where dmId in 
+
+	<foreach item="idItem" collection="array" open="(" separator="," close=")"> 
+
+	#{idItem}
+
+	</foreach> 
+
+</delete>
+
+<!--批量删除-->
+
+<delete id="delList" parameterType="java.util.List">
+
+	delete 	 from `order` where dmId in 
+
+	<foreach item="idItem" collection="list" index="index" open="(" separator="," close=")"> 
+
+	#{idItem}
+
+	</foreach> 
+
+</delete>
+
+<!-- 根据id，修改记录-->  
+
+ <update id="modVo" parameterType="Object" >
+
+  update `order` set sellerId=#{sellerId},couponId=#{couponId},userId=#{userId},crtime=#{crtime},orderType=#{orderType},orderPrice=#{orderPrice},orderStatus=#{orderStatus},threeSerialNumber=#{threeSerialNumber},couponPrice=#{couponPrice},paymentPrice=#{paymentPrice},receivingPhone=#{receivingPhone},receivingName=#{receivingName},houseNumber=#{houseNumber},receivingAddress=#{receivingAddress},goodsCount=#{goodsCount},payStatus=#{payStatus},makeTime=#{makeTime},sendFee=#{sendFee},mealFee=#{mealFee},transactionStatus=#{transactionStatus},receivingStatus=#{receivingStatus},refundStatus=#{refundStatus},sellerOrderStatus=#{sellerOrderStatus},note=#{note},refundNote=#{refundNote} where dmId=#{dmId}
+
+ </update>
+
+ <!-- 修改记录，只修改只不为空的字段 改造-->
+
+<update id="modVoNotNull" parameterType="com.qtz.ht.order.spi.order.vo.HtOrder" >
+
+	update ht_order set 
+	<trim  suffixOverrides="," >
+		<if test="status != null">
+			status=#{status},
+		</if>
+		<if test="noteVip != null and noteVip != '' ">
+			note_vip=#{noteVip},
+		</if>
+		<if test="payMoney != null">
+			pay_money=#{payMoney},
+		</if>
+		<if test="paymentWay != null and paymentWay != '' ">
+			payment_way=#{paymentWay},
+		</if>
+		<if test="payTime != null and payTime != '' ">
+			pay_time=#{payTime},
+		</if>
+		<if test="reciptType != null">
+			recipt_type=#{reciptType},
+		</if>
+		<if test="failureTime != null and failureTime != '' ">
+			failure_time=#{failureTime},
+		</if>
+		<if test="applyTime != null and applyTime != '' ">
+			apply_time=#{applyTime},
+		</if>
+		<if test="agreeTime != null and agreeTime != '' ">
+			agree_time=#{agreeTime},
+		</if>
+		<if test="consignee != null and consignee != '' ">
+			consignee=#{consignee},
+		</if>
+		<if test="detailAddr != null and detailAddr != '' ">
+			detail_addr=#{detailAddr},
+		</if>
+		<if test="houseNumber != null and houseNumber != '' ">
+			house_number=#{houseNumber},
+		</if>
+		<if test="mphoneNo != null and mphoneNo != '' ">
+			mphone_no=#{mphoneNo},
+		</if>
+		<if test="noteVip != null and noteVip != '' ">
+			note_vip=#{noteVip},
+		</if>
+		<if test="express != null and express != '' ">
+			express=#{express},
+		</if>
+		<if test="expressCode != null and expressCode != '' ">
+			express_code=#{expressCode},
+		</if>
+		<if test="deliveryTime != null and deliveryTime != '' ">
+			delivery_time=#{deliveryTime},
+		</if>
+		<if test="noteMan != null and noteMan != '' ">
+			note_man=#{noteMan},
+		</if>
+		<if test="threeSerialNumber != null and threeSerialNumber != '' ">
+			three_serial_number=#{payTime},
+		</if>
+		<if test="completeTime != null and completeTime != ''">
+			complete_time = #{completeTime},
+		</if>
+		<if test="userDeliver != null">
+			user_deliver = #{userDeliver},
+		</if>
+		
+		<if test="deductionPrice != null">
+			deduction_price = #{deductionPrice},
+		</if>
+		<if test="discountPercent != null">
+			discount_percent = #{discountPercent},
+		</if>
+		<if test="constantName != null">
+			constant_name = #{constantName},
+		</if>
+		<if test="constantKey != null">
+			constant_key = #{constantKey},
+		</if>
+		
+	</trim> where dm_id=#{dmId}
+
+</update>
+
+<!-- 根据id查询 订单 改造-->
+
+<select id="findVo"  resultMap="BaseResultMap" parameterType="Object">
+
+	select <include refid="Base_Column_List" /> 
+	 from ht_order t where t.dm_id = #{dmId}
+
+</select>
+
+<!-- 订单 列表总数-->
+
+<select id="queryCount" resultType="java.lang.Integer"  parameterType="Object">
+
+	select count(1) from ht_order t 
+	
+	<if test="goodSpec != null">
+		left join ht_order_goods g on t.dm_id = g.order_id
+	</if>
+	
+	where 1=1
+	
+	<if test="orderStartTime != null">
+		and t.crtime &gt;=#{orderStartTime}
+	</if>
+	<if test="orderEndTime != null">
+		and t.crtime &lt;=#{orderEndTime}
+	</if>
+	<if test="payStartTime != null">
+		and t.pay_time &gt;=#{payStartTime}
+	</if>
+	<if test="payEndTime != null">
+		and t.pay_time &lt;=#{payEndTime}
+	</if>
+	<if test="status != null">
+		<if test="status == 10">
+			and (t.status = 7 or t.status = 2)
+		</if>
+		<if test="status != 10">
+			and t.status = #{status}
+		</if>
+	</if>
+	<if test="vipCode != null">
+		and t.vip_code = #{vipCode}
+	</if>
+	<if test="staffCode != null">
+	    and t.staff_code = #{staffCode}
+	</if>
+	
+	<if test="detailAddr != null">
+		<bind name="addr" value="'%'+detailAddr+'%'"/>
+	    and t.detail_addr like #{addr}
+	</if>
+	
+	<if test="staffName != null">
+		<bind name="name" value="'%'+staffName+'%'"/>
+	    and t.staff_name like #{name}
+	</if>
+	<if test="mphoneNo != null">
+	    and t.mphone_no = #{mphoneNo}
+	</if>
+	<if test="consignee != null">
+	    and t.consignee = #{consignee}
+	</if>
+	<if test="dmId != null">
+	    and t.dm_id = #{dmId}
+	</if>
+	<if test="completeTime != null and completeTime != ''">
+		and t.complete_time = #{completeTime},
+	</if>
+	<if test="expressCode != null">
+		and t.express_code = #{expressCode}
+	</if>
+	
+	<if test="goodSpec != null">
+		and g.good_spec = #{goodSpec}
+	</if>
+</select>
+
+<!-- 分页查询订单列表 -->
+
+<select id="queryList" resultMap="BaseResultMap"  parameterType="Object">
+
+	select 
+
+	<include refid="Base_Column_List"/>
+
+	from ht_order t 
+	
+	<if test="goodSpec != null">
+		left join ht_order_goods g on t.dm_id = g.order_id
+	</if>
+	
+	where 1=1
+	
+	<if test="orderStartTime != null">
+		and t.crtime &gt;=#{orderStartTime}
+	</if>
+	<if test="orderEndTime != null">
+		and t.crtime &lt;=#{orderEndTime}
+	</if>
+	<if test="payStartTime != null">
+		and t.pay_time &gt;=#{payStartTime}
+	</if>
+	<if test="payEndTime != null">
+		and t.pay_time &lt;=#{payEndTime}
+	</if>
+	<if test="status != null">
+		<if test="status == 10">
+			and (t.status = 7 or t.status = 2)
+		</if>
+		<if test="status != 10">
+			and t.status = #{status}
+		</if>
+	</if>
+	<if test="vipCode != null">
+		and t.vip_code = #{vipCode}
+	</if>
+	<if test="staffCode != null">
+	    and t.staff_code = #{staffCode}
+	</if>
+	<if test="staffName != null">
+		<bind name="name" value="'%'+staffName+'%'"/>
+	    and t.staff_name like #{name}
+	</if>
+	<if test="detailAddr != null">
+ 		<bind name="addr" value="'%'+detailAddr+'%'"/> 
+	    and t.detail_addr like #{addr}
+	</if>
+	<if test="mphoneNo != null">
+	    and t.mphone_no = #{mphoneNo}
+	</if>
+	<if test="consignee != null">
+	    and t.consignee = #{consignee}
+	</if>
+	<if test="dmId != null">
+	    and t.dm_id = #{dmId}
+	</if>
+	<if test="completeTime != null and completeTime != ''">
+		and t.complete_time = #{completeTime},
+	</if>
+	
+	<if test="expressCode != null">
+		and t.express_code = #{expressCode}
+	</if>
+	
+	<if test="goodSpec != null">
+		and g.good_spec = #{goodSpec}
+	</if>
+	
+    <if test="mysqlQueryCondition != null and mysqlQueryCondition != ''" >
+		 ${mysqlQueryCondition} 
+    </if>
+
+</select>
+
+<!-- 查询订单列表 改造-->
+
+<select id="findList" resultMap="BaseResultMap"  parameterType="Object">
+
+	select 
+
+	<include refid="Base_Column_List"/>
+
+	from ht_order t 
+
+	<include refid="Example_Where_Clause"/>
+
+</select>
+
+<!-- 加锁访问 改造-->
+<select id="getLockOrder" resultMap="BaseResultMap" parameterType="Object">
+select <include refid="Base_Column_List"/> from ht_order t where t.dm_id=#{orderId} for update
+</select>
+
+
+<select id="findGoodsOrderMap" parameterType="java.util.Map" resultType="java.util.Map">
+	select o.dm_id,o.staff_code,g.goods_id,g.goods_num,o.vip_code from ht_order o left join ht_order_goods g on o.dm_id=g.order_id
+	 where o.batch_id=#{orderId}
+</select>
+
+<select id="findSonGoodsOrderMap" parameterType="java.util.Map" resultType="java.util.Map">
+	select o.dm_id,o.staff_code,g.goods_id,g.goods_num,o.vip_code from ht_order o left join ht_order_goods g on o.dm_id=g.order_id
+	 where o.dm_id = #{orderId}
+</select>
+<update id="physicalIntervention">
+	update ht_order set intervention = #{intervention} where apply_time &lt; #{applyTime} and status = #{status} and intervention = 0
+</update>
+
+<update id="automaticReceipt">
+	update ht_order set status = #{completeStatus} where delivery_time &lt; #{checkTime} and status = #{status}
+</update>
+
+<update id="updateOrderById">
+	update ht_order set deduction_price = #{deductionPrice},discount_percent = #{discountPercent},constant_name = #{constantName},constant_key = #{constantKey},pay_money=#{payMoney} where dm_id = #{dmId} or batch_id =#{dmId} 
+</update>
+
+</mapper>

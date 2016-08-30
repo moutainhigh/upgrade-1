@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtz.ht.order.service.userwallet.dao.ExtractApplyRejectRecordDao">
+	<!-- Result Map com.qtz.member.spi.userwallet.vo.ExtractApply -->
+	<resultMap id="BaseResultMap" type="com.qtz.member.spi.userwallet.dto.ExtractApplyRejectRecord">
+		<result column="dmId" property="dmId" />
+		<result column="saleOrderId" property="saleOrderId" />
+		<result column="bankNo" property="bankNo" />
+		<result column="cardholderName" property="cardholderName" />
+		<result column="amount" property="amount" />
+		<result column="bankName" property="bankName" />
+		<result column="dealRemark" property="dealRemark" />
+		<result column="createOn" property="createOn" />
+		<result column="status" property="status" />
+		<result column="tradingTime" property="tradingTime" />
+		<result column="bankRemark" property="bankRemark" />
+	</resultMap>
+	<resultMap id="ExtractApplyRejectRecordModel" type="com.qtz.member.spi.userwallet.model.ExtractApplyRejectRecordModel">
+		<result column="faildCount" property="faildCount" />
+		<result column="recordCount" property="recordCount" />
+		<result column="totalAmount" property="totalAmount" />
+	</resultMap>
+	
+	<!-- ExtractApply table all fields -->
+	<sql id="Base_Column_List">
+
+	t.dmId,t.saleOrderId,t.bankNo,t.cardholderName,t.amount,t.bankName,t.dealRemark,t.createOn,t.`status`,t.tradingTime,t.bankRemark 
+	</sql>
+
+	<!-- 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" 
+		useGeneratedKeys="true" keyProperty="id">] -->
+	<insert id="addVo" parameterType="Object">
+	INSERT
+	 into 
+	 extractapply_reject_record 
+	 ( dmId,saleOrderId,bankNo,cardholderName,amount,bankName,dealRemark,createOn,status,tradingTime,bankRemark) 
+	 values
+	 ( #{dmId},#{saleOrderId},#{bankNo},#{cardholderName},#{amount},#{bankName},#{dealRemark},#{createOn},#{status},#{tradingTime},#{bankRemark}) 
+	</insert>
+	<!--批量插入记录 -->
+	<insert id="addList" parameterType="java.util.List">
+		INSERT
+	 into 
+	 extractapply_reject_record 
+	 ( dmId,saleOrderId,bankNo,cardholderName,amount,bankName,dealRemark,createOn,status,tradingTime,bankRemark) 
+	 values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			 ( #{item.dmId},#{item.saleOrderId},#{item.bankNo},#{item.cardholderName},#{item.amount},#{item.bankName},#{item.dealRemark},#{item.createOn},#{item.status},#{item.tradingTime},#{item.bankRemark}) 
+		</foreach>
+	</insert>
+
+
+	<!-- 删除记录 -->
+	<delete id="delId" parameterType="Object">
+		delete from extractapply_reject_record where
+		dmId = #{dmId}
+	</delete>
+	<!--批量删除 -->
+	<delete id="delIds" parameterType="java.lang.String">
+		delete from extractapply_reject_record where dmId in
+		<foreach item="idItem" collection="array" open="(" separator=","
+			close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	<!--批量删除 -->
+	<delete id="delList" parameterType="java.util.List">
+		delete from extractapply_reject_record where dmId in
+		<foreach item="idItem" collection="list" index="index" open="("
+			separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+
+	<!-- 根据id，修改记录 -->
+	<update id="modVo" parameterType="Object">
+		update extractapply_reject_record set
+		saleOrderId = #{saleOrderId},
+		bankNo = #{bankNo},
+		cardholderName = #{cardholderName},
+		amount = #{amount},
+		bankName = #{bankName},
+		dealRemark = #{dealRemark},
+		createOn = #{createOn},
+		status = #{status},
+		tradingTime = #{tradingTime},
+		bankRemark = #{bankRemark}
+		where dmId=#{dmId}
+	</update>
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="modVoNotNull" parameterType="Object">
+		update extractapply_reject_record set
+		<trim suffixOverrides=",">
+			<if test="saleOrderId != null and saleOrderId != '' ">
+				saleOrderId=#{saleOrderId},
+			</if>
+			<if test="bankNo != null and bankNo != '' ">
+				bankNo=#{bankNo},
+			</if>
+			<if test="cardholderName != null  and cardholderName != '' ">
+				cardholderName=#{cardholderName},
+			</if>
+			<if test="amount != null  ">
+				amount=#{amount},
+			</if>
+			<if test="bankName != null and bankName != '' ">
+				bankName=#{bankName},
+			</if>
+			<if test="dealRemark != null  and dealRemark != '' ">
+				dealRemark=#{dealRemark},
+			</if>
+			<if test="createOn != null and createOn != '' ">
+				createOn=#{createOn},
+			</if>
+			<if test="status != null and status != '' ">
+				status=#{status},
+			</if>
+			<if test="tradingTime != null and tradingTime != '' ">
+				tradingTime=#{tradingTime},
+			</if>
+				<if test="bankRemark != null and bankRemark != '' ">
+				bankRemark=#{bankRemark},
+			</if>
+		</trim>
+		where dmId=#{dmId}
+	</update>
+
+<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		<where>
+			<if test="saleOrderId != null and saleOrderId != '' ">
+				and t.saleOrderId=#{saleOrderId}
+			</if>
+			<if test="bankNo != null and bankNo != '' ">
+				and t.bankNo=#{bankNo}
+			</if>
+			<if test="cardholderName != null  and cardholderName != '' ">
+				and t.cardholderName=#{cardholderName}
+			</if>
+			<if test="minMoney != null and minMoney !=''">
+				and t.amount &gt;=#{minMoney}
+			</if>
+			<if test="maxMoney != null and maxMoney !=''">
+				and t.amount &lt;=#{maxMoney}
+			</if>
+			<if test="bankName != null and bankName != '' ">
+				and t.bankName=#{bankName}
+			</if>
+			<if test="status != null and  status != 3  and status != 4 ">
+				and t.status=#{status}
+			</if>
+			<if test="status != null and status == 3 ">
+				and t.dealRemark is not null 
+			</if>
+			<if test="status != null and status == 4 ">
+				and t.dealRemark is null 
+			</if>
+			<if test="startTime != null and startTime !=''">
+				and t.tradingTime &gt;=#{startTime}
+			</if>
+			<if test="endTime != null and endTime !=''">
+				and t.tradingTime &lt;=#{endTime}
+			</if>
+		</where>
+	</sql>
+	<!-- 根据id查询 提现申请单 -->
+	<select id="findTotalRecord" resultMap="ExtractApplyRejectRecordModel" parameterType="Object">
+		select  t.faildCount,t1.recordCount,t1.totalAmount from (
+		select count(1) faildCount from extractapply_reject_record where dealRemark is not null 
+		) t,
+		(
+		select count(1) recordCount, sum(amount) totalAmount from extractapply_reject_record where dealRemark is null
+		) t1
+	</select>
+	
+
+	<!-- 根据id查询 提现申请单 -->
+	<select id="findVo" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from extractapply_reject_record t where t.dmId = #{dmId}
+	</select>
+	
+	
+	<!-- 分页查询提现申请单列表 -->
+	<select id="queryList" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from extractapply_reject_record t
+		<include refid="Example_Where_Clause" />
+		<if test="mysqlQueryCondition != null and mysqlQueryCondition != ''">
+			${mysqlQueryCondition}
+		</if>
+	</select>
+<!-- 提现申请单 列表总数 -->
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="Object">
+		select count(1) from extractapply_reject_record t
+		<include refid="Example_Where_Clause" />
+	</select>
+</mapper>

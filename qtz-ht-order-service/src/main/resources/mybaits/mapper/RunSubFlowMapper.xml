@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtz.ht.order.service.userwallet.dao.RunSubDao">
+<!-- 开启缓存 -->
+<cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
+	<!-- Result Map com.qtz.member.spi.userwallet.vo.BusinessRunSubFlow -->
+	<resultMap id="BaseResultMap" type="com.qtz.member.spi.userwallet.dto.RunSubFlow">
+		<result column="dmId" property="dmId" />
+		<result column="userId" property="userId" />
+		<result column="amount" property="amount" />
+		<result column="createOn" property="createOn" />
+		<result column="type" property="type" />
+		<result column="sourceType" property="sourceType" />
+		<result column="reimburseTag" property="reimburseTag" />
+		<result column="saleOrdersId" property="saleOrdersId" />
+		<result column="releaseDate" property="releaseDate" />
+		<result column="status" property="status" />
+		<result column="predictDate" property="predictDate" />
+	</resultMap>
+
+	<!-- BusinessRunSubFlow table all fields -->
+	<sql id="Base_Column_List">
+		t.dmId,
+		t.userId,
+		t.amount,
+		t.sourceType,
+		t.sourceType as type,
+		t.createOn,
+		t.reimburseTag,
+		t.saleOrdersId
+	</sql>
+	
+	<sql id="Base_Column_List_1">
+		t.dmId,
+		t.userId,
+		t.amount,
+		t.sourceType,
+		t.sourceType as type,
+		t.createOn,
+		t.reimburseTag,
+		t.saleOrdersId,
+		t.releaseDate,
+		t.status,
+		if(t.sourceType =2 and t.status =0,t.releaseDate,0) as predictDate
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		<where>
+			<if test="dmId != null  "> and t.dmId=#{dmId}
+			</if>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+			<if test="saleOrdersId != null  and saleOrdersId != '' ">
+				and t.saleOrdersId=#{saleOrdersId}
+			</if>
+			<if test="amount != null  ">
+				and t.amount=#{amount}
+			</if>
+			<if test="status != null  ">
+				and t.status=#{status}
+			</if>
+			<if test="createOn != null  ">
+				and t.createOn=#{createOn}
+			</if>
+			<if test="dateQuery != null  ">
+				and t.rDay=#{dateQuery}
+			</if>
+			<if test="sourceType != null  ">
+				and t.sourceType=#{sourceType}
+			</if>
+			<if test="userType != null  ">
+				and t.userType=#{userType}
+			</if>
+			<if test="dateQuery != null">
+				and
+				t.rday =#{dateQuery}
+			</if>
+			<if test="createOnStart != null and createOnEnd != null">
+				and t.createOn BETWEEN #{createOnStart} AND #{createOnEnd}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 根据id查询 商家分润流水 -->
+	<select id="findVo" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from uw_businessrunsubflow t where t.dmId = #{dmId}
+	</select>
+
+	<!-- 商家分润流水 列表总数 -->
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="Object">
+		select count(1) from uw_businessrunsubflow t
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<!-- 查询商家分润流水列表 -->
+	<select id="findList" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from uw_businessrunsubflow t
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<select id="findRunSubActionDetail_List" resultMap="BaseResultMap"
+		parameterType="Object">
+		select
+		<include refid="Base_Column_List_1" />
+		from runsubflow_list_view as t
+		<include refid="Example_Where_Clause" />
+		<if test="mysqlQueryCondition != null and mysqlQueryCondition != ''">
+			${mysqlQueryCondition}
+		</if>
+	</select>
+	<select id="findRunSubActionDetail_Count" resultType="java.lang.Integer"
+		parameterType="Object">
+		select count(1) from runsubflow_list_view t
+		<include refid="Example_Where_Clause" />
+	</select>
+	
+	<!-- 日账单 -->
+	<select id="queryListByDay" statementType="CALLABLE" parameterType="Object" resultMap="BaseResultMap">
+		{
+			call uw_runsubflow_list_pro(
+				#{userId,jdbcType=BIGINT,mode=IN},
+				#{createOnStart,jdbcType=BIGINT,mode=IN},
+				#{createOnEnd,jdbcType=BIGINT,mode=IN},
+				#{pageSize,jdbcType=BIGINT,mode=IN},
+				#{pageOffset,jdbcType=BIGINT,mode=IN},
+				#{sourceType,jdbcType=BIGINT,mode=IN},
+				'list',
+				#{userType,jdbcType=BIGINT,mode=IN}
+			)
+		}
+	</select>
+	
+	<select id="queryCountByDay" statementType="CALLABLE" resultType="java.lang.Integer"
+		parameterType="Object">
+		{
+			call uw_runsubflow_list_pro(
+				#{userId,jdbcType=BIGINT,mode=IN},
+				#{createOnStart,jdbcType=BIGINT,mode=IN},
+				#{createOnEnd,jdbcType=BIGINT,mode=IN},
+				0,
+				0,
+				#{sourceType,jdbcType=BIGINT,mode=IN},
+				'count',
+				#{userType,jdbcType=BIGINT,mode=IN}
+			)
+		}
+	</select>
+
+</mapper>

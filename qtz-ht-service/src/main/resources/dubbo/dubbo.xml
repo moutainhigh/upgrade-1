@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://code.alibabatech.com/schema/dubbo 
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+   ">
+	<!-- 提供方应用信息，用于计算依赖关系 -->
+	<dubbo:application name="qtz-ht-service" />
+	<!-- 使用zookeeper注册中心暴露服务地址 -->
+	<dubbo:registry protocol="zookeeper" address="${zookeeper.servers}" file="${dubbo.registry.file}"  />
+	<!-- 用dubbo协议在指定端口暴露服务 -->
+	<dubbo:protocol name="dubbo" port="${dubbo.port}" threads="${dubbo.threads}"/>
+	<!--###############################声明需要暴露的服务接口############################################ -->
+	<dubbo:provider version="1.0.0"  timeout="10000" />
+    <!-- 订单 -->
+    <dubbo:service interface="com.qtz.ht.spi.order.service.HtOrderService" ref="htOrderServiceImpl" retries="0"/>
+    <!-- 抢车活动服务 -->
+    <dubbo:service interface="com.qtz.ht.spi.order.service.TransferActivityService" ref="transferActivityServiceImpl" retries="0"/>
+    <!-- 商品 -->
+    <dubbo:service interface="com.qtz.ht.spi.good.service.HtGoodCateService" ref="htGoodCateServiceImpl" retries="0"/>
+    <dubbo:service interface="com.qtz.ht.spi.good.service.HtGoodDescService" ref="htGoodDescServiceImpl" retries="0"/>
+    <dubbo:service interface="com.qtz.ht.spi.good.service.HtGoodLogService" ref="htGoodLogServiceImpl" retries="0"/>
+    <dubbo:service interface="com.qtz.ht.spi.good.service.HtGoodsAlbumService" ref="htGoodsAlbumServiceImpl" retries="0"/>
+    <dubbo:service interface="com.qtz.ht.spi.good.service.HtStaffGoodsService" ref="htStaffGoodsServiceImpl" retries="0"/>
+    <dubbo:service interface="com.qtz.ht.spi.good.service.HtGoodCateAssoService" ref="htGoodCateAssoServiceImpl" timeout="3000" retries="0"/>
+    <!-- 系统 -->
+    <dubbo:service interface="com.qtz.ht.spi.system.service.HtBannerService" ref="htBannerServiceImpl"  timeout="3000" retries="0"/>
+	<dubbo:service interface="com.qtz.ht.spi.system.service.HtActivityService" ref="htActivityServiceImpl" timeout="3000" retries="0"/>
+    <dubbo:service interface="com.qtz.ht.spi.system.service.HtFloorGoodsService" ref="htFloorGoodsServiceImpl" timeout="3000" retries="0"/>
+    <dubbo:service interface="com.qtz.ht.spi.system.service.HtFloorService" ref="htFloorServiceImpl" timeout="3000" retries="0"/>
+    <dubbo:service interface="com.qtz.ht.spi.system.service.HtCategoryService" ref="htCategoryServiceImpl" timeout="3000" retries="0"/>
+    <dubbo:service interface="com.qtz.ht.spi.system.service.HtCartService" ref="htCartServiceImpl" timeout="3000" retries="0"/>
+  
+	<!--###############################声明需要依赖的服务接口############################################ -->
+	<dubbo:consumer version="1.0.0" check="false"/>
+	
+	<dubbo:reference interface="com.qtz.ht.order.spi.order.service.OrigOrderService" id="origOrderServiceImpl"  check="false"/>
+   	<!-- 用户 -->
+	<dubbo:reference interface="com.qtz.ht.session.spi.user.service.HtBusinessService" id="htBusinessServiceImpl"  />
+	<dubbo:reference interface="com.qtz.ht.session.spi.user.service.HtBusinessLogService" id="htBusinessLogServiceImpl"  />
+	<dubbo:reference interface="com.qtz.ht.session.spi.user.service.HtMenuService" id="htMenuServiceImpl"  />
+	<dubbo:reference interface="com.qtz.ht.session.spi.user.service.HtRoleMenuService" id="htRoleMenuServiceImpl"  />
+	<dubbo:reference interface="com.qtz.ht.session.spi.user.service.HtRoleService" id="htRoleServiceImpl"  />
+	<dubbo:reference interface="com.qtz.ht.session.spi.user.service.HtUserRoleService" id="htUserRoleServiceImpl"  />
+	<dubbo:reference interface="com.qtz.ht.session.spi.user.service.HtUserService" id="htUserServiceImpl"  />
+	<!-- 用户钱包 -->
+	<dubbo:reference interface="com.qtz.member.spi.userwallet.service.UserWalletService" id="userWalletServiceImpl" check="false"/>
+   	<!-- 钱包 -->
+	<dubbo:reference interface="com.qtz.ht.session.spi.wallet.service.HtBankCardService" id="htBankCardServiceImpl"  />
+    <dubbo:reference interface="com.qtz.ht.session.spi.wallet.service.HtCheckRecordService" id="htCheckRecordServiceImpl" />
+    <dubbo:reference interface="com.qtz.ht.session.spi.wallet.service.HtPlatformWalletLogService" id="htPlatformWalletLogServiceImpl" />
+    <dubbo:reference interface="com.qtz.ht.session.spi.wallet.service.HtStaffPaymentFlowService" id="htStaffPaymentFlowServiceImpl" />
+    <dubbo:reference interface="com.qtz.ht.session.spi.wallet.service.HtWalletService" id="htWalletServiceImpl" />
+		
+	<dubbo:reference interface="com.qtz.id.spi.IdService" id="idServiceImpl" />
+</beans>

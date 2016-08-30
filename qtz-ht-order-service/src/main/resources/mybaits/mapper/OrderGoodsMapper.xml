@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtz.ht.order.service.order.dao.OrderGoodsDao" >
+<!-- 开启缓存 -->
+<cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
+<!-- Result Map com.qtz.dm.order.vo.OrderGoods-->
+<resultMap id="BaseResultMap" type="com.qtz.ht.order.spi.order.vo.HtOrderGoods" >
+	 <result column="dm_id"  property="dmId"/> 
+<result column="order_id"  property="orderId"/> 
+<result column="goods_name"  property="goodsName"/> 
+<result column="goods_num"  property="goodsNum"/> 
+<result column="goods_total_price"  property="goodsTotalPrice"/> 
+<result column="sale_money"  property="saleMoney"/> 
+<result column="goods_id"  property="goodsId"/> 
+<result column="sup_money"  property="supMoney"/> 
+<result column="count_money"  property="countMoney"/> 
+<result column="count_sup"  property="countSup"/> 
+<result column="count_profit"  property="countProfit"/> 
+<result column="goods_num"  property="goodsNum"/> 
+<result column="send_type"  property="sendType"/> 
+<result column="return_type"  property="returnType"/> 
+<result column="return_num"  property="returnNum"/> 
+<result column="logistic_code"  property="logisticCode"/> 
+<result column="send_time"  property="sendTime"/> 
+<result column="receipt_time"  property="receiptTime"/> 
+<result column="est_receipt_time"  property="estReceiptTime"/> 
+<result column="quick_photo"  property="quickPhoto"/> 
+<result column="discount_money"  property="discountMoney"/> 
+<result column="discount_note"  property="discountNote"/> 
+<result column="end_status"  property="endStatus"/> 
+<result column="rebate_money"  property="rebateMoney"/> 
+<result column="invoice_number"  property="invoiceNumber"/> 
+<result column="good_img"  property="goodImg"/>
+<result column="final_price" property="finalPrice"/> 
+<result column="total_final_price" property="totalFinalPrice"/>
+<result column="good_spec" property="goodSpec"/>
+</resultMap>
+
+<!-- ht_order_goods table all fields -->
+<sql id="Base_Column_List" >
+	 t.dm_id,t.order_id,t.goods_name,t.goods_num,t.goods_total_price,t.sale_money,t.goods_id,t.sup_money,t.count_money,t.count_sup,t.count_profit,
+	 t.send_type,t.return_type,t.return_num,t.logistic_code,t.send_time,t.receipt_time,t.est_receipt_time,t.quick_photo,t.discount_money,t.discount_note,
+	 t.end_status,t.rebate_money,t.invoice_number, t.good_img,t.good_spec,t.total_final_price,t.final_price
+</sql>
+
+<!-- 查询条件 -->
+<sql id="Example_Where_Clause">
+<where>
+	<if test="dmId != null  ">
+		 and t.dm_Id=#{dmId}
+	</if>
+	<if test="orderId != null  ">
+		 and t.order_Id=#{orderId}
+	</if>
+	<if test="goodsName != null  and goodsName != '' ">
+		 and t.goods_Name=#{goodsName}
+	</if>
+	<if test="goodsNum != null  ">
+		 and t.goods_Num=#{goodsNum}
+	</if>
+	<if test="goodsTotalPrice != null  ">
+		 and t.goods_total_price=#{goodsTotalPrice}
+	</if>
+	
+	<if test="goodsId != null  ">
+		 and t.goods_id=#{goodsId}
+	</if>
+
+</where>
+</sql>
+   
+
+<!-- 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" useGeneratedKeys="true" keyProperty="id">] -->
+<insert id="addVo" parameterType="Object" >
+  insert into ht_order_goods(dm_id,order_id,goods_name,goods_num,goods_total_price,goods_id,sale_money,sup_money,count_money,send_type,return_type,good_img,end_status,good_spec,total_final_price,final_price)
+ values(#{dmId},#{orderId},#{goodsName},#{goodsNum},#{goodsTotalPrice},#{goodsId},#{saleMoney},#{supMoney},#{countMoney},#{sendType},#{returnType},#{goodImg},#{endStatus},#{goodSpec},#{totalFinalPrice},#{finalPrice})
+</insert>
+<!--批量插入记录 -->
+<insert id="addList" parameterType="java.util.List">
+  insert into ht_order_goods(dm_id,order_id,goods_name,goods_num,goods_total_price,goods_id,sale_money,sup_money,count_money,send_type,return_type,good_img,end_status,good_spec,total_final_price,final_price) values
+   <foreach collection="list" item="item" index="index" separator=",">
+	  (
+	  	#{item.dmId},#{item.orderId},#{item.goodsName},#{item.goodsNum},#{item.goodsTotalPrice},#{item.goodsId},#{item.saleMoney},#{item.supMoney},#{item.countMoney},#{item.sendType},#{item.returnType},#{item.goodImg},#{item.endStatus},#{item.goodSpec},#{item.totalFinalPrice},#{item.finalPrice}
+	  	)
+	  </foreach> 
+</insert>
+
+
+<!-- 删除记录 -->
+<delete id="delId" parameterType="Object">
+	delete 	 from ht_order_goods where dmId = #{dmId}
+</delete>
+<!--批量删除-->
+<delete id="delIds" parameterType="java.lang.String">
+	delete 	 from ht_order_goods where dmId in 
+	<foreach item="idItem" collection="array" open="(" separator="," close=")"> 
+	#{idItem}
+	</foreach> 
+</delete>
+<!--批量删除-->
+<delete id="delList" parameterType="java.util.List">
+	delete 	 from ht_order_goods where dmId in 
+	<foreach item="idItem" collection="list" index="index" open="(" separator="," close=")"> 
+	#{idItem}
+	</foreach> 
+</delete>
+
+<!-- 根据id，修改记录-->  
+ <update id="modVo" parameterType="Object" >
+  update ht_order_goods set orderId=#{orderId},goodsName=#{goodsName},goodsNum=#{goodsNum},goodsTotalPrice=#{goodsTotalPrice},goodsPrice=#{goodsPrice},goodsId=#{goodsId} where dmId=#{dmId}
+ </update>
+ <!-- 修改记录，只修改只不为空的字段 -->
+<update id="modVoNotNull" parameterType="Object" >
+	update ht_order_goods set 
+	<trim  suffixOverrides="," >
+	<if test="orderId != null  ">
+		orderId=#{orderId},
+	</if>
+	<if test="goodsName != null  and goodsName != '' ">
+		goodsName=#{goodsName},
+	</if>
+	<if test="goodsNum != null  ">
+		goodsNum=#{goodsNum},
+	</if>
+	<if test="goodsTotalPrice != null  ">
+		goodsTotalPrice=#{goodsTotalPrice},
+	</if>
+	<if test="goodsPrice != null  ">
+		goodsPrice=#{goodsPrice},
+	</if>
+	<if test="goodsId != null  ">
+		goodsId=#{goodsId},
+	</if>
+	</trim> where dmId=#{dmId}
+</update>
+
+
+ 
+<!-- 根据id查询 订单对应商品 -->
+<select id="findVo"  resultType="com.qtz.ht.order.spi.order.vo.HtOrderGoods" parameterType="Object">
+	select <include refid="Base_Column_List" /> 
+	 from ht_order_goods t where t.dmId = #{dmId}
+</select>
+
+<!-- 订单对应商品 列表总数-->
+<select id="queryCount" resultType="java.lang.Integer"  parameterType="Object">
+	select count(1) from ht_order_goods t 
+	<include refid="Example_Where_Clause"/>
+</select>
+
+<!-- 分页查询订单对应商品列表 -->
+<select id="queryList" resultMap="BaseResultMap"  parameterType="Object">
+	select 
+	<include refid="Base_Column_List"/>
+	from ht_order_goods t 
+	<include refid="Example_Where_Clause"/>
+	
+    <if test="mysqlQueryCondition != null and mysqlQueryCondition != ''" >
+       ${mysqlQueryCondition}
+    </if>
+</select>
+
+<!-- 查询订单对应商品列表 -->
+<select id="findList" resultMap="BaseResultMap"  parameterType="Object">
+	select 
+	<include refid="Base_Column_List"/>
+	from ht_order_goods t 
+	<include refid="Example_Where_Clause"/>
+</select>
+
+</mapper>

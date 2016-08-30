@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtz.ht.order.service.userwallet.dao.ExtractApplyDao">
+<!-- 开启缓存 -->
+<cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
+	<!-- Result Map com.qtz.member.spi.userwallet.vo.ExtractApply -->
+	<resultMap id="BaseResultMap" type="com.qtz.member.spi.userwallet.dto.ExtractApply">
+		<result column="dmId" property="dmId" />
+		<result column="sourceType" property="sourceType" />
+		<result column="applyTime" property="applyTime" />
+		<result column="userId" property="userId" />
+		<result column="amount" property="amount" />
+		<result column="bankName" property="bankName" />
+		<result column="bankNo" property="bankNo" />
+		<result column="cardholderName" property="cardholderName" />
+		<result column="status" property="status" />
+		<result column="createBy" property="createBy" />
+		<result column="createOn" property="createOn" />
+		<result column="dealBy" property="dealBy" />
+		<result column="dealOn" property="dealOn" />
+		<result column="dealRemark" property="dealRemark" />
+		<result column="updateBy" property="updateBy" />
+		<result column="updateOn" property="updateOn" />
+		<result column="type" property="type" />
+		<result column="releaseDate" property="releaseDate" />
+		<result column="userType" property="userType"/>
+		<result column="statisticsDate" property="statisticsDate"/>
+	 	<result column="arrival_amount"  property="arrivalAmount"/> 
+	 	<result column="tax_dedu_rate"  property="taxDeduRate"/> 
+	 	<result column="tax_dedu_money"  property="taxDeduMoney"/> 
+		<result column="single_source_id"  property="singleSourceId"/>
+		<result column="saleOrdersId"  property="saleOrdersId"/> 
+		<result column="predictDate"  property="predictDate"/> 
+	</resultMap>
+	<resultMap id="UserWalletReturnModel" type="com.qtz.member.spi.userwallet.model.UserWalletReturnModel">
+		<result column="userId" property="userId" />
+		<result column="totalAmount" property="totalAmount" />
+		<result column="sourceType" property="sourceType" />
+		<result column="status" property="status" />
+		<result column="userType" property="userType" />
+	</resultMap>
+
+	<!-- ExtractApply table all fields -->
+	<sql id="Base_Column_List">
+
+		t.dmId,t.sourceType,t.applyTime,t.userId,t.amount,t.bankName,t.bankNo,t.cardholderName,t.status,t.createBy,t.createOn,t.dealBy,t.dealOn,t.dealRemark,t.updateBy,t.updateOn,t.releaseDate,t.userType,t.statisticsDate,t.arrival_amount,t.tax_dedu_rate,t.tax_dedu_money
+		,t.single_source_id
+		,t.single_source_id as saleOrdersId,t.releaseDate as predictDate
+	</sql>
+	
+		<!-- for get extractapply-->
+	<sql id="Base_Column_List_apply">
+
+		t.dmId,t.sourceType,t.applyTime,t.userId,t.amount,t.bankName,t.bankNo,t.cardholderName,t.status,t.createOn,t.dealOn,t.dealRemark,t.updateOn,t.userType,t.arrival_amount
+		,t.single_source_id
+		,t.single_source_id as saleOrdersId
+	</sql>
+
+	<sql id="Base_Column_List2">
+		t.dmId,t.sourceType,t.createOn,t.userId,t.amount,t.status,t.releaseDate,t.single_source_id as saleOrdersId,t.single_source_id,t.releaseDate as predictDate
+	</sql>
+
+	<sql id="Base_Column_List3">
+		t.dmId,t.sourceType,t.createOn,t.amount,t.sourceType as type
+	</sql>
+	
+	<sql id="Base_Column_List4">
+		t.dmId,t.sourceType,t.amount,t.status,t.updateOn, t.dealRemark, t.updateBy,t.single_source_id,t.cardholderName,t.applyTime,t.cardholderName,t.userId,t.userType
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		<where>
+			<if test="dmId != null  "> and t.dmId=#{dmId}
+			</if>
+			<if test="sourceType != null  ">
+				and t.sourceType=#{sourceType}
+			</if>
+			<if test="userType != null ">
+				and t.userType=#{userType}
+			</if>
+			<if test="applyTime != null  ">
+				and t.applyTime=#{applyTime}
+			</if>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+			<if test="amount != null  ">
+				and t.amount=#{amount}
+			</if>
+			<if test="bankName != null  and bankName != '' ">
+				and t.bankName=#{bankName}
+			</if>
+			<if test="bankNo != null  and bankNo != '' ">
+				and t.bankNo=#{bankNo}
+			</if>
+			<if test="cardholderName != null  and cardholderName != '' ">
+				and t.cardholderName=#{cardholderName}
+			</if>
+			<if test="status != null  ">
+				and t.status=#{status}
+			</if>
+			<if test="createBy != null  and createBy != '' ">
+				and t.createBy=#{createBy}
+			</if>
+			<if test="createOn != null  ">
+				and t.createOn=#{createOn}
+			</if>
+			<if test="dealBy != null  ">
+				and t.dealBy=#{dealBy}
+			</if>
+			<if test="dealOn != null  ">
+				and t.dealOn=#{dealOn}
+			</if>
+			<if test="dealRemark != null  and dealRemark != '' ">
+				and t.dealRemark=#{dealRemark}
+			</if>
+			<if test="updateBy != null  ">
+				and t.updateBy=#{updateBy}
+			</if>
+			<if test="updateOn != null  ">
+				and t.updateOn=#{updateOn}
+			</if>
+			<if test="releaseDate != null  ">
+				and t.releaseDate=#{releaseDate}
+			</if>
+			<if test="statisticsDate != null  ">
+				and t.statisticsDate=#{statisticsDate}
+			</if>
+			<if test="arrivalAmount != null  ">
+				 and t.arrival_amount=#{arrivalAmount}
+			</if>
+			<if test="taxDeduRate != null  ">
+				 and t.tax_dedu_rate=#{taxDeduRate}
+			</if>
+			<if test="taxDeduMoney != null  ">
+				 and t.tax_dedu_money=#{taxDeduMoney}
+			</if>
+			<if test="dateQuery != null">
+				and CONCAT_WS('-',year(t.statisticsDate),month(t.statisticsDate))=#{dateQuery}
+			</if>
+			<if test="dateQueryDay != null">
+				and CONCAT_WS('-',year(t.statisticsDate),month(t.statisticsDate),day(t.statisticsDate))=#{dateQueryDay}
+			</if>
+			<if test="singleSourceId != null">
+				and t.single_source_id = #{singleSourceId}
+			</if>
+		</where>
+	</sql>
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause_for_apply">
+		<where>
+		<!-- 	<if test="dmId == null  "> 
+			and  t.dmId 
+		in
+		(
+		 	SELECT dmId from 
+		(
+			select  t1.dmId,t1.single_source_id from  ( select dmId ,single_source_id from uw_extractapply ORDER BY createOn desc )t1  GROUP BY t1.single_source_id
+			)t2
+		)
+			</if> -->
+			<if test="sourceType != null  ">
+				and t.sourceType=#{sourceType}
+			</if>
+			<if test="userType != null ">
+				and t.userType=#{userType}
+			</if>
+			<if test="applyTime != null  ">
+				and t.applyTime=#{applyTime}
+			</if>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+			<if test="amount != null  ">
+				and t.amount=#{amount}
+			</if>
+			<if test="bankName != null  and bankName != '' ">
+				and t.bankName=#{bankName}
+			</if>
+			<if test="bankNo != null  and bankNo != '' ">
+				and t.bankNo=#{bankNo}
+			</if>
+			<if test="cardholderName != null  and cardholderName != '' ">
+				and t.cardholderName=#{cardholderName}
+			</if>
+			<if test="status != null  ">
+				and t.status=#{status}
+			</if>
+			<if test="createBy != null  and createBy != '' ">
+				and t.createBy=#{createBy}
+			</if>
+			<if test="createOn != null  ">
+				and t.createOn=#{createOn}
+			</if>
+			<if test="dealBy != null  ">
+				and t.dealBy=#{dealBy}
+			</if>
+			<if test="dealOn != null  ">
+				and t.dealOn=#{dealOn}
+			</if>
+			<if test="dealRemark != null  and dealRemark != '' ">
+				and t.dealRemark=#{dealRemark}
+			</if>
+			<if test="updateBy != null  ">
+				and t.updateBy=#{updateBy}
+			</if>
+			<if test="updateOn != null  ">
+				and t.updateOn=#{updateOn}
+			</if>
+			<if test="releaseDate != null  ">
+				and t.releaseDate=#{releaseDate}
+			</if>
+			<if test="statisticsDate != null  ">
+				and t.statisticsDate=#{statisticsDate}
+			</if>
+			<if test="arrivalAmount != null  ">
+				 and t.arrival_amount=#{arrivalAmount}
+			</if>
+			<if test="taxDeduRate != null  ">
+				 and t.tax_dedu_rate=#{taxDeduRate}
+			</if>
+			<if test="taxDeduMoney != null  ">
+				 and t.tax_dedu_money=#{taxDeduMoney}
+			</if>
+			<if test="singleSourceId != null">
+				and t.single_source_id = #{singleSourceId}
+			</if>
+		</where>
+	</sql>
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause_for_total">
+		<where>
+			<if test="sourceType != null  ">
+				and t.sourceType=#{sourceType}
+			</if>
+			<if test="userType != null ">
+				and t.userType=#{userType}
+			</if>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+			<if test="status != null  ">
+				and t.status=#{status}
+			</if>
+		</where>
+	</sql>
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause_for_record">
+	<where>
+			<if test="userType != null ">
+				and t.userType=#{userType}
+			</if>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+			<if test="singleSourceId != null">
+				and t.single_source_id = #{singleSourceId}
+			</if>
+		</where>
+	</sql>
+
+
+	<!-- 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" 
+		useGeneratedKeys="true" keyProperty="id">] -->
+	<insert id="addVo" parameterType="Object">
+		insert into
+		uw_extractapply(dmId,sourceType,applyTime,userId,amount,bankName,bankNo,cardholderName,status,createBy,createOn,dealBy,dealOn,dealRemark,updateBy,updateOn,releaseDate,userType,statisticsDate,arrival_amount,tax_dedu_rate,tax_dedu_money,single_source_id)
+		values(#{dmId},#{sourceType},#{applyTime},#{userId},#{amount},#{bankName},#{bankNo},#{cardholderName},#{status},#{createBy},
+		#{createOn},#{dealBy},#{dealOn},#{dealRemark},#{updateBy},#{updateOn},#{releaseDate},${userType},#{statisticsDate},#{arrivalAmount},#{taxDeduRate},#{taxDeduMoney},#{singleSourceId})
+	</insert>
+	<!--批量插入记录 -->
+	<insert id="addList" parameterType="java.util.List">
+		insert into
+		uw_extractapply(dmId,sourceType,applyTime,userId,amount,bankName,bankNo,cardholderName,status,createBy,createOn,dealBy,dealOn,dealRemark,updateBy,updateOn,releaseDate,userType,statisticsDate,arrival_amount,tax_dedu_rate,tax_dedu_money,single_source_id)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(
+			#{item.dmId},#{item.sourceType},#{item.applyTime},#{item.userId},#{item.amount},#{item.bankName},#{item.bankNo},#{item.cardholderName},#{item.status},#{item.createBy},
+			#{item.createOn},#{item.dealBy},#{item.dealOn},#{item.dealRemark},#{item.updateBy},#{item.updateOn},#{item.releaseDate},#{userType},#{statisticsDate},#{item.arrivalAmount},#{item.taxDeduRate},#{item.taxDeduMoney},#{item.singleSourceId}
+			)
+		</foreach>
+	</insert>
+
+
+	<!-- 删除记录 -->
+	<delete id="delId" parameterType="Object">
+		delete from uw_extractapply where
+		dmId = #{dmId}
+	</delete>
+	<!--批量删除 -->
+	<delete id="delIds" parameterType="java.lang.String">
+		delete from uw_extractapply where dmId in
+		<foreach item="idItem" collection="array" open="(" separator=","
+			close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	<!--批量删除 -->
+	<delete id="delList" parameterType="java.util.List">
+		delete from uw_extractapply where dmId in
+		<foreach item="idItem" collection="list" index="index" open="("
+			separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+
+	<!-- 根据id，修改记录 -->
+	<update id="modVo" parameterType="Object">
+		update uw_extractapply set
+		sourceType=#{sourceType},applyTime=#{applyTime},userId=#{userId},amount=#{amount},bankName=#{bankName},bankNo=#{bankNo},cardholderName=#{cardholderName},status=#{status},
+		createBy=#{createBy},createOn=#{createOn},dealBy=#{dealBy},dealOn=#{dealOn},dealRemark=#{dealRemark},updateBy=#{updateBy},updateOn=#{updateOn},releaseDate=#{releaseDate},
+		userType=#{userType},statisticsDate=#{statisticsDate},arrival_amount=#{arrivalAmount},tax_dedu_rate=#{taxDeduRate},tax_dedu_money=#{taxDeduMoney},single_source_id=#{singleSourceId}
+		where dmId=#{dmId}
+	</update>
+	<!-- 根据id，修改记录 有返回值-->
+	<update id="updateVoNotNull" parameterType="Object">
+		update uw_extractapply set
+		sourceType=#{sourceType},applyTime=#{applyTime},userId=#{userId},amount=#{amount},bankName=#{bankName},bankNo=#{bankNo},cardholderName=#{cardholderName},status=#{status},
+		createBy=#{createBy},createOn=#{createOn},dealBy=#{dealBy},dealOn=#{dealOn},dealRemark=#{dealRemark},updateBy=#{updateBy},updateOn=#{updateOn},releaseDate=#{releaseDate},
+		userType=#{userType},statisticsDate=#{statisticsDate},arrival_amount=#{arrivalAmount},tax_dedu_rate=#{taxDeduRate},tax_dedu_money=#{taxDeduMoney},single_source_id=#{singleSourceId}
+		where dmId=#{dmId} and status=#{whereStatus}
+	</update>
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="modVoNotNull" parameterType="Object">
+		update uw_extractapply set
+		<trim suffixOverrides=",">
+			<if test="sourceType != null  ">
+				sourceType=#{sourceType},
+			</if>
+			<if test="applyTime != null  ">
+				applyTime=#{applyTime},
+			</if>
+			<if test="userId != null  ">
+				userId=#{userId},
+			</if>
+			<if test="amount != null  ">
+				amount=#{amount},
+			</if>
+			<if test="bankName != null  and bankName != '' ">
+				bankName=#{bankName},
+			</if>
+			<if test="bankNo != null  and bankNo != '' ">
+				bankNo=#{bankNo},
+			</if>
+			<if test="cardholderName != null  and cardholderName != '' ">
+				cardholderName=#{cardholderName},
+			</if>
+			<if test="status != null  ">
+				status=#{status},
+			</if>
+			<if test="createBy != null  and createBy != '' ">
+				createBy=#{createBy},
+			</if>
+			<if test="createOn != null  ">
+				createOn=#{createOn},
+			</if>
+			<if test="dealBy != null  ">
+				dealBy=#{dealBy},
+			</if>
+			<if test="dealOn != null  ">
+				dealOn=#{dealOn},
+			</if>
+			<if test="dealRemark != null  and dealRemark != '' ">
+				dealRemark=#{dealRemark},
+			</if>
+			<if test="updateBy != null  ">
+				updateBy=#{updateBy},
+			</if>
+			<if test="updateOn != null  ">
+				updateOn=#{updateOn},
+			</if>
+			<if test="releaseDate != null  ">
+				releaseDate=#{releaseDate},
+			</if>
+			<if test="userType != null  ">
+				userType=#{userType},
+			</if>
+			<if test="statisticsDate != null  ">
+				statisticsDate=#{statisticsDate},
+			</if>
+			<if test="arrivalAmount != null  ">
+				arrival_amount=#{arrivalAmount},
+			</if>
+			<if test="taxDeduRate != null  ">
+				tax_dedu_rate=#{taxDeduRate},
+			</if>
+			<if test="taxDeduMoney != null  ">
+				tax_dedu_money=#{taxDeduMoney},
+			</if>
+
+
+
+		</trim>
+		where dmId=#{dmId}
+	</update>
+
+  	
+  	<!-- 统计个提现 -->
+  	<select id="findSumMOney" resultType="java.lang.Double" parameterType="Object">
+		select sum(amount) from uw_extractapply  t where  t.status &lt; 2 and sourceType=#{sourceType}  and t.userId=#{userId};
+	</select>
+
+	<!-- 根据id查询 提现申请单 -->
+	<select id="findVo" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from uw_extractapply t where t.dmId = #{dmId}
+	</select>
+<!-- 获取某个人对账中类型型总计 -->
+	<select id="findTotalAmount" resultType="java.lang.Double"
+		parameterType="Object">
+		select sum(amount) from uw_extractapply t
+		<include refid="Example_Where_Clause_for_total" />
+		and t.dmId = t.single_source_id
+	</select>
+	<!-- 按用户分组查询提现流水list 按userid sourceTypoe status 分组 -->
+	<select id="findTotalAmountByGroup" resultType="com.qtz.member.spi.userwallet.model.UserWalletReturnModel"
+		parameterType="Object">
+		select sum(t.amount)totalAmount,t.userId,t.sourceType,t.`status`,t.userType from uw_extractapply  t where t.userId in   
+		<foreach item="item" index="index" collection="userIdList"
+      		open="(" separator="," close=")">
+       		 #{item}
+  		</foreach>
+  		GROUP BY t.userId,t.sourceType,t.`status`,t.userType
+	</select>
+	<!-- 提现申请单 列表总数 -->
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="Object">
+		select count(1) from uw_extractapply t
+		<include refid="Example_Where_Clause" />
+		<if test="sTime != null and sTime !=''">
+			and t.createOn &gt;=#{sTime}
+		</if>
+		<if test="eTime != null and eTime !=''">
+			and t.createOn &lt;=#{eTime}
+		</if>
+		<if test="minMoney != null and minMoney !=''">
+			and t.amount &gt;=#{minMoney}
+		</if>
+		<if test="maxMoney != null and maxMoney !=''">
+			and t.amount &lt;=#{maxMoney}
+		</if>
+	</select>
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause_findTotalAmount">
+	<where>
+			<if test="sourceType != null ">
+				and t.sourceType=#{sourceType}
+			</if>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+		</where>
+	</sql>
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause_inner">
+		<where>
+			<if test="userId != null ">
+				and userId=#{userId}
+			</if>
+			<if test="userType != null ">
+				and userType=#{userType}
+			</if>
+			<if test="sourceType != null  ">
+				and sourceType=#{sourceType}
+			</if>
+			<if test="bankName != null  and bankName != '' ">
+				and bankName=#{bankName}
+			</if>
+			<if test="bankNo != null  and bankNo != '' ">
+				and bankNo=#{bankNo}
+			</if>
+			<if test="cardholderName != null  and cardholderName != '' ">
+				and cardholderName=#{cardholderName}
+			</if>
+			<if test="sTime != null and sTime !=''">
+				and applyTime &gt;=#{sTime}
+			</if>
+			<if test="eTime != null and eTime !=''">
+				and applyTime &lt;=#{eTime}
+			</if>
+			<if test="startTime != null and startTime !=''">
+				and applyTime &gt;=#{startTime}
+			</if>
+			<if test="endTime != null and endTime !=''">
+				and applyTime &lt;=#{endTime}
+			</if>
+			<if test="minMoney != null and minMoney !='' and amountType == 1 ">
+				and amount &gt;=#{minMoney}
+			</if>
+			<if test="maxMoney != null and maxMoney !='' and amountType == 1">
+				and amount &lt;=#{maxMoney}
+			</if>
+			<if test="minMoney != null and minMoney !='' and amountType == 2">
+				and arrival_amount &gt;=#{minMoney}
+			</if>
+			<if test="maxMoney != null and maxMoney !='' and amountType == 2 ">
+				and arrival_amount &lt;=#{maxMoney}
+			</if>
+		</where>
+	</sql>
+	
+		<!-- 获取某个人已提现总计 -->
+	<select id="findTotalAppliedAmount" resultType="java.lang.Double" parameterType="Object">
+		SELECT
+
+	sum(t.exAmount + t.backAmount)
+FROM
+	(
+		SELECT
+			t.userId,
+			t.userType,
+			t.sourceType,
+
+		IF (t. STATUS = 1, t.amount, 0) AS exAmount,
+
+	IF (t. STATUS = 2, 0 - t.amount, 0) AS backAmount
+	FROM
+		uw_extractapply AS t
+	WHERE
+		(t. STATUS = 1 OR t. STATUS = 2)
+	) AS t 
+	<include refid="Example_Where_Clause_findTotalAmount" />
+GROUP BY
+	t.userId,
+ t.userType,
+ t.sourceType;
+
+	</select>
+	<!-- 提现申请单 列表总数 -->
+	<select id="queryExtractApplyCount" resultType="java.lang.Integer"
+		parameterType="Object">
+		SELECT
+		count(1)
+		from (
+		select t3.dmId from (
+
+		select t1.dmId,t1.single_source_id ,t1.status from ( select dmId ,single_source_id,status from uw_extractapply
+
+		<include refid="Example_Where_Clause_inner"/>
+
+		ORDER BY createOn desc
+		)t1 GROUP BY t1.single_source_id
+		) t3
+		<if test="status != null">
+			where t3.status = #{status}
+		</if>
+		) t2
+
+	</select>
+	
+
+	<!-- 分页查询提现申请单列表 -->
+	<select id="queryList" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from uw_extractapply t
+		<include refid="Example_Where_Clause" />
+		<if test="sTime != null and sTime !=''">
+			and t.createOn &gt;=#{sTime}
+		</if>
+		<if test="eTime != null and eTime !=''">
+			and t.createOn &lt;=#{eTime}
+		</if>
+		<if test="minMoney != null and minMoney !=''">
+			and t.amount &gt;=#{minMoney}
+		</if>
+		<if test="maxMoney != null and maxMoney !=''">
+			and t.amount &lt;=#{maxMoney}
+		</if>
+		<if test="mysqlQueryCondition != null and mysqlQueryCondition != ''">
+			${mysqlQueryCondition}
+		</if>
+	</select>
+	<!-- 分页查询提现申请单列表 原始记录 -->
+	<select id="queryExtractApply" resultMap="BaseResultMap" parameterType="Object">
+		SELECT
+		 <include refid="Base_Column_List_apply" />
+		FROM uw_extractapply t
+		INNER JOIN (
+		select t3.dmId from (
+		select t1.dmId,t1.single_source_id,t1.status from ( select dmId ,single_source_id,status from uw_extractapply
+
+		<include refid="Example_Where_Clause_inner"/>
+		ORDER BY createOn desc
+		)t1 GROUP BY t1.single_source_id
+		ORDER BY t1.dmId desc
+		) t3
+		<if test="status != null">
+			where t3.status = #{status}
+		</if>
+		ORDER BY t3.dmId desc
+		<if test="innerLimitStr != null and innerLimitStr != ''">
+			${innerLimitStr}
+		</if>
+		)
+		t2 ON t2.dmId = t.dmid
+		<if test="wrapLimitStr != null and wrapLimitStr != ''">
+			${wrapLimitStr}
+		</if>
+	</select>
+
+	<!-- 查询提现申请单列表 -->
+	<select id="findList" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List2" />
+		from uw_extractapply t
+		<include refid="Example_Where_Clause" />
+		order by t.createOn desc
+	</select>
+		<!-- 查询提现申请单列表 通过订单id -->
+	<select id="findListByOrderId" resultMap="BaseResultMap" parameterType="Object">
+		select 
+		 <include refid="Base_Column_List" /> 
+		from uw_extractapply t where 
+t.dmId 
+		in
+		(
+		 	SELECT dmId from 
+		(
+			select  t1.dmId,t1.single_source_id from  ( select dmId ,single_source_id from uw_extractapply where single_source_id in 
+				 <foreach item="item" index="index" collection="list"
+		      open="(" separator="," close=")">
+		        #{item}
+ 			 </foreach>
+  ORDER BY createOn desc )t1 GROUP BY t1.single_source_id
+			)t2
+		)
+	</select>
+	<!-- 查询提现申请操作记录列表 -->
+	<select id="findApplyRecord" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List4" />
+		from uw_extractapply t
+		<include refid="Example_Where_Clause_for_record" />
+		order by t.createOn desc
+	</select>
+	<!-- 查询提现申请单列表 -->
+	<select id="findListByParams" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List2" />
+		from uw_extractapply t where t.status = #{status} and t.createOn <![CDATA[ >= ]]> #{startTime}
+		 and t.createOn <![CDATA[ <= ]]> #{endTime} and t.userId = #{userId} 
+	</select>
+
+</mapper>

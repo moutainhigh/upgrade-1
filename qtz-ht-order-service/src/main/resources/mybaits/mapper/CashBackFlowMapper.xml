@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtz.ht.order.service.userwallet.dao.CashBackFlowDao">
+<!-- 开启缓存 -->
+<cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
+	<!-- Result Map com.qtz.member.spi.userwallet.vo.CashBackFlow -->
+	<resultMap id="BaseResultMap" type="com.qtz.member.spi.userwallet.dto.CashBackFlow">
+		<result column="dmId" property="dmId" />
+		<result column="userId" property="userId" />
+		<result column="saleOrdersId" property="saleOrdersId" />
+		<result column="amount" property="amount" />
+		<result column="status" property="status" />
+		<result column="createOn" property="createOn" />
+		<result column="type" property="type" />
+		<result column="sourceType" property="sourceType" />
+		<result column="reimburseTag" property="reimburseTag" />
+		<result column="statisticsDate" property="statisticsDate"/>
+	</resultMap>
+	
+	<resultMap id="BaseResultMap_view" type="com.qtz.member.spi.userwallet.dto.CashBackFlow">
+		<result column="dmId" property="dmId" />
+		<result column="userId" property="userId" />
+		<result column="saleOrdersId" property="saleOrdersId" />
+		<result column="amount" property="amount" />
+		<result column="status" property="status" />
+		<result column="createOn" property="createOn" />
+		<result column="type" property="type" />
+		<result column="sourceType" property="sourceType" />
+		<result column="reimburseTag" property="reimburseTag" />
+		<result column="releaseDate" property="releaseDate" />
+		<result column="predictDate" property="predictDate" />
+	</resultMap>
+	<resultMap id="UserWalletReturnModel" type="com.qtz.member.spi.userwallet.model.UserWalletReturnModel">
+		<result column="userId" property="userId" />
+		<result column="totalAmount" property="totalAmount" />
+	</resultMap>
+
+	<!-- CashBackFlow table all fields -->
+	<sql id="Base_Column_List">
+		t.dmId,t.userId,t.saleOrdersId,t.amount,t.status,t.createOn,t.statisticsDate
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		<where>
+			<if test="dmId != null  "> and t.dmId=#{dmId}
+			</if>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+			<if test="saleOrdersId != null  and saleOrdersId != '' ">
+				and t.saleOrdersId=#{saleOrdersId}
+			</if>
+			<if test="amount != null  ">
+				and t.amount=#{amount}
+			</if>
+			<if test="createOn != null  ">
+				and t.createOn=#{createOn}
+			</if>
+			<if test="dateQuery != null  ">
+				and t.rDay=#{dateQuery}
+			</if>
+			<if test="sourceType != null  ">
+				and t.sourceType=#{sourceType}
+			</if>
+			<if test="createOnStart != null and createOnEnd != null">
+				and t.createOn BETWEEN #{createOnStart} AND #{createOnEnd}
+			</if>
+		</where>
+	</sql>
+		<!-- 查询条件 -->
+	<sql id="Example_Where_Clause_normal">
+		<where>
+			<if test="dmId != null  "> and t.dmId=#{dmId}
+			</if>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+			<if test="saleOrdersId != null  and saleOrdersId != '' ">
+				and t.saleOrdersId=#{saleOrdersId}
+			</if>
+			<if test="amount != null  ">
+				and t.amount=#{amount}
+			</if>
+			<if test="createOn != null  ">
+				and t.createOn=#{createOn}
+			</if>
+			<if test="sourceType != null  ">
+				and t.sourceType=#{sourceType}
+			</if>
+		</where>
+	</sql>
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause_for_total">
+		<where>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+			<if test="sourceType != null  ">
+				and t.sourceType=#{sourceType}
+			</if>
+		</where>
+	</sql>
+
+
+	<!-- 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" 
+		useGeneratedKeys="true" keyProperty="id">] -->
+	<insert id="addVo" parameterType="Object">
+		insert into
+		uw_cashbackflow(dmId,userId,saleOrdersId,amount,status,createOn,statisticsDate)
+		values(#{dmId},#{userId},#{saleOrdersId},#{amount},#{status},#{createOn},#{statisticsDate})
+	</insert>
+	<!--批量插入记录 -->
+	<insert id="addList" parameterType="java.util.List">
+		insert into
+		uw_cashbackflow(dmId,userId,saleOrdersId,amount,status,createOn,statisticsDate) values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(
+			#{item.dmId},#{item.userId},#{item.saleOrdersId},#{item.amount},#{item.status},#{item.createOn},#{item.statisticsDate}
+			)
+		</foreach>
+	</insert>
+
+
+	<!-- 删除记录 -->
+	<delete id="delId" parameterType="Object">
+		delete from uw_cashbackflow where
+		dmId = #{dmId}
+	</delete>
+	<!--批量删除 -->
+	<delete id="delIds" parameterType="java.lang.String">
+		delete from uw_cashbackflow where dmId in
+		<foreach item="idItem" collection="array" open="(" separator=","
+			close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	<!--批量删除 -->
+	<delete id="delList" parameterType="java.util.List">
+		delete from uw_cashbackflow where dmId in
+		<foreach item="idItem" collection="list" index="index" open="("
+			separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+
+	<!-- 根据id，修改记录 -->
+	<update id="modVo" parameterType="Object">
+		update uw_cashbackflow set
+		userId=#{userId},saleOrdersId=#{saleOrdersId},amount=#{amount},status=#{status},createOn=#{createOn}
+		where dmId=#{dmId}
+	</update>
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="modVoNotNull" parameterType="Object">
+		update uw_cashbackflow set
+		<trim suffixOverrides=",">
+			<if test="userId != null  ">
+				userId=#{userId},
+			</if>
+			<if test="saleOrdersId != null  and saleOrdersId != '' ">
+				saleOrdersId=#{saleOrdersId},
+			</if>
+			<if test="amount != null  ">
+				amount=#{amount},
+			</if>
+			<if test="status != null  ">
+				status=#{status},
+			</if>
+			<if test="createOn != null  ">
+				createOn=#{createOn},
+			</if>
+		</trim>
+		where dmId=#{dmId}
+	</update>
+	<!-- 个人总返现 -->
+	<select id="findSumAmount" resultType="java.lang.Double" parameterType="Object">
+			select sum(amount) from uw_cashbackflow t where t.userId=#{userId}
+	</select>
+
+	<!-- 根据id查询 返现流水 -->
+	<select id="findVo" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from uw_cashbackflow t where t.dmId = #{dmId}
+	</select>
+
+	<!-- 返现流水 列表总数 -->
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="Object">
+		select count(1) from cashbackflow_list_view t
+		<include refid="Example_Where_Clause" />
+	</select>
+	<!-- 获取某人返现金额统计 -->
+	<select id="findTotalAmount" resultType="java.lang.Double"
+		parameterType="Object">
+		select sum(amount) from uw_cashbackflow t
+		<include refid="Example_Where_Clause_for_total" />
+	</select>
+	<!-- 按用户分组查询提现流水list 按userid sourceTypoe status 分组 -->
+	<select id="findTotalAmountByGroup" resultType="com.qtz.member.spi.userwallet.model.UserWalletReturnModel"
+		parameterType="Object">
+		select sum(t.amount)totalAmount, t.userId from uw_cashbackflow t where t.userId in     
+		<foreach item="item" index="index" collection="userIdList"
+      		open="(" separator="," close=")">
+       		 #{item}
+  		</foreach>
+  		GROUP BY t.userId
+	</select>
+
+	<!-- 分页查询返现流水列表 -->
+	<select id="queryList" resultMap="BaseResultMap_view" parameterType="Object">
+		select
+		t.createOn,
+		t.dmId,
+		t.sourceType,
+		t.amount,
+		t.sourceType as type,
+		t.saleOrdersId,
+		IF(t.sourceType =3 and t.status =0,t.releaseDate,0) as predictDate,
+		t.rDay,
+		t.reimburseTag,
+		t.status
+		from
+		cashbackflow_list_view as
+		t
+		<include refid="Example_Where_Clause" />
+		<if test="mysqlQueryCondition != null and mysqlQueryCondition != ''">
+			${mysqlQueryCondition}
+		</if>
+	</select>
+
+	<!-- 查询返现流水列表 -->
+	<select id="findList" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from uw_cashbackflow t
+		<include refid="Example_Where_Clause" />
+	</select>
+	
+	<!-- 查询返现流水列表 normal -->
+	<select id="findList_normal" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from uw_cashbackflow t
+		<include refid="Example_Where_Clause_normal" />
+	</select>
+	
+	<!-- 日账单 -->
+	<select id="queryListByDay" statementType="CALLABLE" parameterType="Object" resultMap="BaseResultMap_view">
+		{
+			call uw_cashbackflow_list_pro(
+				#{userId,jdbcType=BIGINT,mode=IN},
+				#{createOnStart,jdbcType=BIGINT,mode=IN},
+				#{createOnEnd,jdbcType=BIGINT,mode=IN},
+				#{pageSize,jdbcType=BIGINT,mode=IN},
+				#{pageOffset,jdbcType=BIGINT,mode=IN},
+				#{sourceType,jdbcType=BIGINT,mode=IN},
+				'list'
+			)
+		}
+	</select>
+	
+	<select id="queryCountByDay" statementType="CALLABLE" resultType="java.lang.Integer"
+		parameterType="Object">
+		{
+			call uw_cashbackflow_list_pro(
+				#{userId,jdbcType=BIGINT,mode=IN},
+				#{createOnStart,jdbcType=BIGINT,mode=IN},
+				#{createOnEnd,jdbcType=BIGINT,mode=IN},
+				0,
+				0,
+				#{sourceType,jdbcType=BIGINT,mode=IN},
+				'count'
+			)
+		}
+	</select>
+	
+
+</mapper>

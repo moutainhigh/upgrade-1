@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans        
+    http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://code.alibabatech.com/schema/dubbo        
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd       
+   ">
+
+	<!-- 提供方应用信息，用于计算依赖关系 -->
+	<dubbo:application name="qtz-ht-order-service" />
+	<!-- 使用zookeeper注册中心暴露服务地址 -->
+	<dubbo:registry protocol="zookeeper" address="${zookeeper.servers}"
+		file="${dubbo.registry.file}" />
+	<!-- 用dubbo协议在20880端口暴露服务 -->
+	<dubbo:protocol name="dubbo" port="${dubbo.port}"
+		threads="${dubbo.threads}" />
+	<!-- 服务提供者,超时时间全局设为3秒(dubbo默认为1秒),需要根据具体情况在service上来设置 -->
+	<dubbo:provider version="1.0.0" timeout="3000" />
+	<!-- 消费者,需要根据具体情况在reference上来设置 -->
+	<dubbo:consumer version="1.0.0" />
+
+	<!-- 海淘订单 -->
+	<dubbo:service interface="com.qtz.ht.order.spi.order.service.OrigOrderService"
+		ref="origOrderServiceImpl" timeout="5000" />
+	<dubbo:service interface="com.qtz.ht.order.spi.message.service.MessageService"
+		ref="messageServiceImpl" timeout="5000" />
+	<dubbo:service interface="com.qtz.ht.order.spi.order.service.OrderLogService"
+		ref="origOrderLogServiceImpl" timeout="5000" />
+
+	<!-- 收货信息服务 -->
+	<dubbo:reference check="false"
+		interface="com.qtz.member.spi.user.service.UserReceivingInfoService"
+		id="userReceivingInfoServiceImpl" />
+	<!-- 用户信息服务 -->
+	<dubbo:reference check="false"
+		interface="com.qtz.member.spi.user.service.UsersService" id="usersServiceImpl" />
+	<dubbo:reference check="false"
+		interface="com.qtz.member.spi.user.service.UsersShopService" id="usersShopServiceImpl" />
+
+	<dubbo:reference check="false"
+		interface="com.qtz.ht.spi.order.service.HtOrderService" id="htOrderServiceImpl" />
+	<dubbo:reference check="false"
+		interface="com.qtz.member.spi.userwallet.service.UserWalletService"
+		id="userWalletServiceImpl" />
+
+	<dubbo:reference id="remissionRuleService"
+		interface="com.qtz.system.spi.rule.service.RemissionRuleService"
+		check="false" />
+	<dubbo:reference id="reconciliationMessageService"
+		interface="com.qtz.member.spi.mq.service.ReconciliationMessageService"
+		check="false" />
+
+	<dubbo:reference id="userConsumptionFlowService"
+		interface="com.qtz.member.spi.userwallet.service.UserConsumptionFlowService"
+		check="false" />
+
+	<dubbo:reference interface="com.qtz.id.spi.IdService"
+		id="idServiceImpl" />
+
+	<dubbo:reference
+		interface="com.qtz.member.spi.userwallet.service.SimpleUserWalletService"
+		id="simpleUserWalletService" check="false" timeout="5000" />
+
+	<dubbo:reference check="false"
+		interface="com.qtz.member.spi.userwallet.service.ReconciliationRecordService"
+		id="ReconciliationRecordServices" timeout="5000" />
+
+	<!-- 自定义消息 -->
+	<dubbo:reference id="customMsgService"
+		interface="com.qtz.system.spi.jpush.service.CustomMsgService" />
+	<!-- jpush add by zk on 2016年8月12日14:47:25 -->
+	<dubbo:reference interface="com.qtz.msg.spi.JpushService"
+		id="jpushServiceImpl" />
+</beans>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtz.ht.order.service.news.dao.MqFailNewsDao" >
+<!-- Result Map com.qtz.dm.news.vo.MqFailNews-->
+<resultMap id="BaseResultMap" type="com.qtz.mq.dto.MqFailNews" >
+	 <result column="dm_id"  property="dmId"/> 
+	 <result column="news_id"  property="newsId"/> 
+	 <result column="producetime"  property="producetime"/> 
+	 <result column="text"  property="text"/> 
+	
+</resultMap>
+
+<!-- mq_fail_news table all fields -->
+<sql id="Base_Column_List" >
+	 t.dm_id,t.news_id,t.producetime,t.text
+</sql>
+
+<!-- 查询条件 -->
+<sql id="Example_Where_Clause">
+<where>
+	<if test="dmId != null  ">
+		 and t.dm_id=#{dmId}
+	</if>
+	<if test="newsId != null  ">
+		 and t.news_id=#{newsId}
+	</if>
+	<if test="producetime != null  ">
+		 and t.producetime=#{producetime}
+	</if>
+	<if test="text != null  and text != '' ">
+		 and t.text=#{text}
+	</if>
+
+</where>
+</sql>
+
+<!-- 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" useGeneratedKeys="true" keyProperty="id">] -->
+<insert id="addVo" parameterType="Object" >
+  insert into mq_fail_news(dm_id,news_id,producetime,text)
+ values(#{dmId},#{newsId},#{producetime},#{text})
+</insert>
+<!--批量插入记录 -->
+<insert id="addList" parameterType="java.util.List">
+  insert into mq_fail_news(dm_id,news_id,producetime,text) values
+   <foreach collection="list" item="item" index="index" separator=",">
+	  (
+	  	 #{item.dmId},#{item.newsId},#{item.producetime},#{item.text}
+	  )
+	  </foreach> 
+</insert>
+
+<!-- 删除记录 -->
+<delete id="delId" parameterType="Object">
+	delete 	 from mq_fail_news where dm_id = #{dmId}
+</delete>
+<!--批量删除-->
+<delete id="delIds" parameterType="java.lang.String">
+	delete 	 from mq_fail_news where dm_id in 
+	<foreach item="idItem" collection="array" open="(" separator="," close=")"> 
+	#{idItem}
+	</foreach> 
+</delete>
+<!--批量删除-->
+<delete id="delList" parameterType="java.util.List">
+	delete 	 from mq_fail_news where dm_id in 
+	<foreach item="idItem" collection="list" index="index" open="(" separator="," close=")"> 
+	#{idItem}
+	</foreach> 
+</delete>
+
+<!-- 根据id，修改记录-->  
+ <update id="modVo" parameterType="Object" >
+  update mq_fail_news set news_id=#{newsId},producetime=#{producetime},text=#{text} where dm_id=#{dmId}
+ </update>
+ <!-- 修改记录，只修改只不为空的字段 -->
+<update id="modVoNotNull" parameterType="Object" >
+	update mq_fail_news set 
+	<trim  suffixOverrides="," >
+	<if test="newsId != null  ">
+		news_id=#{newsId},
+	</if>
+	<if test="producetime != null  ">
+		producetime=#{producetime},
+	</if>
+	<if test="text != null  and text != '' ">
+		text=#{text},
+	</if>
+	</trim> where dm_id=#{dmId}
+</update>
+ 
+<!-- 根据id查询 MQ发送失败消息类 -->
+<select id="findVo"  resultMap="BaseResultMap" parameterType="Object">
+	select <include refid="Base_Column_List" /> 
+	 from mq_fail_news t where t.dm_id = #{dmId}
+</select>
+
+<!-- MQ发送失败消息类 列表总数-->
+<select id="queryCount" resultType="java.lang.Integer"  parameterType="Object">
+	select count(1) from mq_fail_news t 
+	<include refid="Example_Where_Clause"/>
+</select>
+
+<!-- 分页查询MQ发送失败消息类列表 -->
+<select id="queryList" resultMap="BaseResultMap"  parameterType="Object">
+	select 
+	<include refid="Base_Column_List"/>
+	from mq_fail_news t 
+	<include refid="Example_Where_Clause"/>
+	
+<!-- 	<if test="orderCondition != null and orderCondition != ''" > -->
+<!--       ${orderCondition} -->
+<!--     </if> -->
+    <if test="mysqlQueryCondition != null and mysqlQueryCondition != ''" >
+       ${mysqlQueryCondition}
+    </if>
+</select>
+
+<!-- 查询MQ发送失败消息类列表 -->
+<select id="findList" resultMap="BaseResultMap"  parameterType="Object">
+	select 
+	<include refid="Base_Column_List"/>
+	from mq_fail_news t 
+	<include refid="Example_Where_Clause"/>
+</select>
+
+</mapper>

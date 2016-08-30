@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtz.ht.order.service.order.dao.SupermarketGoodsDao" >
+<!-- 开启缓存 -->
+<cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
+
+<sql id="Base_Column_List" >
+	dmId,orderId,goodsName,goodsNum,goodsPrice,goodsId,goodsImg,remark,goodsProValMsg,supplyPrice,sellerId,discountPrice,skuId,storePercent,supermarketPercent,supplyChainPercent,storagePercent,goodsCode,goodsSpec,supplierId
+</sql>
+
+<!-- 查询条件 -->
+<sql id="Example_Where_Clause">
+<where>
+	
+	<if test="dmId != null and dmId != ''">
+		dmId = #{dmId}
+	</if>
+	<if test="orderId != null and orderId != ''">
+		orderId = #{orderId}
+	</if>
+	<if test="goodsName != null and goodsName != ''">
+		goodsName = #{goodsName}
+	</if>
+	<if test="goodsNum != null and goodsNum != ''">
+		goodsNum = #{goodsNum}
+	</if>
+	<if test="goodsPrice != null and goodsPrice != ''">
+		goodsPrice = #{goodsPrice}
+	</if>
+	<if test="goodsId != null and goodsId != ''">
+		goodsId = #{goodsId}
+	</if>
+	<if test="remark != null and remark != ''">
+		remark = #{remark}
+	</if>
+	<if test="goodsProValMsg != null and goodsProValMsg != ''">
+		goodsProValMsg = #{goodsProValMsg}
+	</if>
+	<if test="skuId != null and skuId != ''">
+		skuId = #{skuId}
+	</if>
+	
+</where>
+</sql>
+   
+
+<!-- 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" useGeneratedKeys="true" keyProperty="id">] -->
+<insert id="addVo" parameterType="Object" >
+  insert into supermarket_goods (dmId,orderId,sellerId,goodsName,goodsNum,goodsPrice,goodsId,goodsImg,remark,goodsProValMsg,supplyPrice,discountPrice,skuId,storePercent,supermarketPercent,supplyChainPercent,storagePercent,goodsCode,goodsSpec,supplierId) values (#{dmId},#{orderId},#{sellerId},#{goodsName},#{goodsNum},#{goodsPrice},#{goodsId},#{goodsImg},#{remark},#{goodsProValMsg},#{supplyPrice},#{discountPrice},#{skuId},#{storePercent},#{supermarketPercent},#{supplyChainPercent},#{storagePercent},#{goodsCode},#{goodsSpec},#{supplierId})
+</insert>
+<!-- 批量插入记录 -->
+<insert id="addList" parameterType="java.util.List">
+  insert into supermarket_goods(dmId,orderId,sellerId,goodsName,goodsNum,goodsPrice,goodsId,goodsImg,remark,goodsProValMsg,supplyPrice,discountPrice,skuId,storePercent,supermarketPercent,supplyChainPercent,storagePercent,goodsCode,goodsSpec,supplierId) values
+   <foreach collection="list" item="item" index="index" separator=",">
+	  (
+	  	#{item.dmId},#{item.orderId},#{item.sellerId},#{item.goodsName},#{item.goodsNum},#{item.goodsPrice},#{item.goodsId},#{item.goodsImg},#{item.remark},#{item.goodsProValMsg},#{item.supplyPrice},#{item.discountPrice},#{item.skuId},#{item.storePercent},#{item.supermarketPercent},#{item.supplyChainPercent},#{item.storagePercent},#{item.goodsCode},#{item.goodsSpec},#{item.supplierId}
+	  	)
+	  </foreach> 
+</insert>
+
+
+<!-- 删除记录 -->
+<delete id="delId" parameterType="Object">
+	delete 	 from supermarket_goods where dmId = #{dmId}
+</delete>
+<!-- 批量删除 -->
+<delete id="delIds" parameterType="java.lang.String">
+	delete 	 from supermarket_goods where dmId in 
+	<foreach item="idItem" collection="array" open="(" separator="," close=")"> 
+	#{idItem}
+	</foreach> 
+</delete>
+
+<!-- 批量删除 -->
+<delete id="delList" parameterType="java.util.List">
+	delete 	 from supermarket_goods where dmId in 
+	<foreach item="idItem" collection="list" index="index" open="(" separator="," close=")"> 
+	#{idItem}
+	</foreach> 
+</delete>
+
+<!-- 根据id，修改记录   -->
+ <update id="modVo" parameterType="Object" >
+  update supermarket_goods set orderId=#{orderId},goodsName=#{goodsName},goodsNum=#{goodsNum},goodsTotalPrice=#{goodsTotalPrice},goodsPrice=#{goodsPrice},goodsId=#{goodsId} where dmId=#{dmId}
+ </update>
+ 
+ <!-- 修改记录，只修改只不为空的字段 -->
+<update id="modVoNotNull" parameterType="Object" >
+	update supermarket_goods set 
+	<trim  suffixOverrides="," >
+	<if test="orderId != null  ">
+		orderId=#{orderId},
+	</if>
+	<if test="goodsName != null  and goodsName != '' ">
+		goodsName=#{goodsName},
+	</if>
+	<if test="goodsNum != null  ">
+		goodsNum=#{goodsNum},
+	</if>
+	
+	<if test="goodsPrice != null  ">
+		goodsPrice=#{goodsPrice},
+	</if>
+	<if test="goodsId != null  ">
+		goodsId=#{goodsId},
+	</if>
+	<if test="remark != null and remark != ''">
+		remark = #{remark}
+	</if>
+	<if test="goodsProValMsg != null and goodsProValMsg != ''">
+		goodsProValMsg = #{goodsProValMsg}
+	</if>
+	<if test="skuId != null and skuId != ''">
+		skuId = #{skuId}
+	</if>
+	</trim> 
+	
+	where dmId=#{dmId}
+	
+</update>
+
+
+ 
+<!-- 根据id查询 订单对应商品 -->
+<select id="findVo" resultType="com.qtz.ht.order.spi.order.vo.SupermarketGoods" parameterType="Object">
+	select <include refid="Base_Column_List" /> 
+	 from supermarket_goods  where dmId = #{dmId}
+</select>
+
+<!-- 订单对应商品 列表总数 -->
+<select id="queryCount" resultType="java.lang.Integer"  parameterType="Object">
+	select count(1) from supermarket_goods 
+	<include refid="Example_Where_Clause"/>
+</select>
+
+<!-- 分页查询订单对应商品列表 -->
+<select id="queryList" resultType="com.qtz.ht.order.spi.order.vo.SupermarketGoods" parameterType="Object">
+	select 
+	<include refid="Base_Column_List"/>
+	from supermarket_goods 
+	<include refid="Example_Where_Clause"/>
+	
+    <if test="mysqlQueryCondition != null and mysqlQueryCondition != ''" >
+       ${mysqlQueryCondition}
+    </if>
+</select>
+
+<!-- 查询订单对应商品列表 -->
+<select id="findList" resultType="com.qtz.ht.order.spi.order.vo.SupermarketGoods"  parameterType="Object">
+	select 
+	<include refid="Base_Column_List"/>
+		from supermarket_goods
+	<include refid="Example_Where_Clause"/>
+</select> 
+
+</mapper>

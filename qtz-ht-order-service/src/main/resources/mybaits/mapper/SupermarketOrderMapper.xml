@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtz.ht.order.service.order.dao.SupermarketOrderDao" >
+<!-- 开启缓存 -->
+<cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
+
+<sql id="Base_Column_List" >
+	dmId,batchId,orderStatus,orderPrice,couponPrice,intervention,paymentPrice,threeSerialNumber,couponId,userId,sellerId,crtime,payTime,completeTime,applyTime,note,payType,goodsCount,expectedTime,receivingPhone,receivingName,receivingAddress,orderType,storageId,printFlag,storageName,consumeType  
+</sql>
+
+<sql id="Base_Column_StringList" >
+	dmId,dmId as orderStringID,batchId,orderStatus,orderPrice,couponPrice,intervention,paymentPrice,threeSerialNumber,couponId,userId,sellerId,crtime,payTime,completeTime,applyTime,note,payType,goodsCount,expectedTime,receivingPhone,receivingName,receivingAddress,orderType,storageId,printFlag,storageName,consumeType,handleTime  
+</sql>
+
+<!-- 查询条件 -->
+<sql id="Example_Where_Clause">
+<where>
+	
+	<if test="dmId != null">
+		dmId = #{dmId}
+	</if>
+	
+	<if test="batchId != null">
+		batchId = #{batchId}
+	</if>
+	<if test="orderStatus != null">
+		orderStatus = #{orderStatus}
+	</if>
+	<if test="orderPrice != null">
+		orderPrice = #{orderPrice}
+	</if>
+	<if test="couponPrice != null">
+		couponPrice = #{couponPrice}
+	</if>
+	<if test="paymentPrice != null">
+		paymentPrice = #{paymentPrice}
+	</if>
+	<if test="threeSerialNumber != null and threeSerialNumber != ''">
+		threeSerialNumber = #{threeSerialNumber}
+	</if>
+	<if test="couponId != null">
+		couponId = #{couponId}
+	</if>
+	<if test="userId != null">
+		userId = #{userId}
+	</if>
+	
+	<if test="sellerId != null">
+		sellerId = #{sellerId}
+	</if>
+	<if test="crtime != null">
+		crtime = #{crtime}
+	</if>
+	<if test="payTime != null">
+		payTime = #{payTime}
+	</if>
+	<if test="completeTime != null">
+		completeTime = #{completeTime}
+	</if>
+	<if test="applyTime != null">
+		applyTime = #{applyTime}
+	</if>
+	<if test="note != null and note != ''">
+		note = #{note}
+	</if>
+	<if test="payType != null">
+		payType = #{payType}
+	</if>
+	<if test="goodsCount != null">
+		goodsCount = #{goodsCount}
+	</if>
+	<if test="expectedTime != null">
+		expectedTime = #{expectedTime}
+	</if>
+	<if test="receivingPhone != null and receivingPhone != ''">
+		receivingPhone = #{receivingPhone}
+	</if>
+	<if test="receivingName != null and receivingName != ''">
+		receivingName = #{receivingName}
+	</if>
+	<if test="receivingAddress != null and receivingAddress != ''">
+		receivingAddress = #{receivingAddress}
+	</if>
+	<if test="orderType != null">
+		orderType = #{orderType}
+	</if>
+	<if test="storageId != null">
+		storageId = #{storageId}
+	</if>
+	<if test="intervention != null">
+		intervention = #{intervention}
+	</if>
+</where>
+</sql>
+   
+
+<!-- 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" useGeneratedKeys="true" keyProperty="id">] -->
+<insert id="addVo" parameterType="Object" >
+  insert into supermarket_order (dmId,batchId,orderStatus,orderPrice,couponPrice,paymentPrice,threeSerialNumber,couponId,userId,sellerId,crtime,payTime,completeTime,applyTime,note,payType,goodsCount,expectedTime,receivingPhone,receivingName,receivingAddress,orderType,storageId,printFlag,storageName,intervention,consumeType) 
+ 	 values 
+  (#{dmId},#{batchId},#{orderStatus},#{orderPrice},#{couponPrice},#{paymentPrice},#{threeSerialNumber},#{couponId},#{userId},#{sellerId},#{crtime},#{payTime},#{completeTime},#{applyTime},#{note},#{payType},#{goodsCount},#{expectedTime},#{receivingPhone},#{receivingName},#{receivingAddress},#{orderType},#{storageId},#{printFlag},#{storageName},#{intervention},#{consumeType})
+</insert>
+
+<!-- 批量插入记录 -->
+<insert id="addList" parameterType="java.util.List">
+  insert into supermarket_order(dmId,batchId,orderStatus,orderPrice,couponPrice,paymentPrice,threeSerialNumber,couponId,userId,sellerId,crtime,payTime,completeTime,applyTime,note,payType,goodsCount,expectedTime,receivingPhone,receivingName,receivingAddress,orderType,storageId,printFlag,storageName,intervention,consumeType) values
+   <foreach collection="list" item="item" index="index" separator=",">
+	  (
+	   #{item.dmId},#{item.batchId},#{item.orderStatus},#{item.orderPrice},#{item.couponPrice},#{item.paymentPrice},#{item.threeSerialNumber},#{item.couponId},#{item.userId},#{item.sellerId},#{item.crtime},#{item.payTime},#{item.completeTime},#{item.applyTime},#{item.note},#{item.payType},#{item.goodsCount},#{item.expectedTime},#{item.receivingPhone},#{item.receivingName},#{item.receivingAddress},#{item.orderType},#{item.storageId},#{item.printFlag},#{item.storageName},#{item.intervention},#{item.consumeType}
+	  	)
+	  </foreach> 
+</insert>
+
+
+<!-- 删除记录 -->
+<delete id="delId" parameterType="Object">
+	delete 	 from supermarket_order where dmId = #{dmId}
+</delete>
+<!-- 批量删除 -->
+<delete id="delIds" parameterType="java.lang.String">
+	delete 	 from supermarket_order where dmId in 
+	<foreach item="idItem" collection="array" open="(" separator="," close=")"> 
+	#{idItem}
+	</foreach> 
+</delete>
+
+<!-- 批量删除 -->
+<delete id="delList" parameterType="java.util.List">
+	delete 	 from supermarket_order where dmId in 
+	<foreach item="idItem" collection="list" index="index" open="(" separator="," close=")"> 
+	#{idItem}
+	</foreach> 
+</delete>
+
+<!-- 根据id，修改记录   -->
+ <update id="modVo" parameterType="Object" >
+  update supermarket_order set orderId=#{orderId},goodsName=#{goodsName},goodsNum=#{goodsNum},goodsTotalPrice=#{goodsTotalPrice},goodsPrice=#{goodsPrice},goodsId=#{goodsId} where dmId=#{dmId}
+ </update>
+ 
+<!--  修改记录，只修改只不为空的字段 -->
+<update id="modVoNotNull" parameterType="Object" >
+	update supermarket_order set 
+	
+	<trim  suffixOverrides="," >
+	<if test="batchId != null">
+		batchId = #{batchId},
+	</if>
+	<if test="orderStatus != null ">
+		orderStatus = #{orderStatus},
+	</if>
+	<if test="orderPrice != null ">
+		orderPrice = #{orderPrice},
+	</if>
+	<if test="couponPrice != null">
+		couponPrice = #{couponPrice},
+	</if>
+	<if test="paymentPrice != null">
+		paymentPrice = #{paymentPrice},
+	</if>
+	<if test="threeSerialNumber != null and threeSerialNumber != ''">
+		threeSerialNumber = #{threeSerialNumber},
+	</if>
+	<if test="couponId != null">
+		couponId = #{couponId},
+	</if>
+	<if test="userId != null">
+		userId = #{userId},
+	</if>
+	
+	<if test="sellerId != null">
+		sellerId = #{sellerId},
+	</if>
+	<if test="crtime != null">
+		crtime = #{crtime},
+	</if>
+	<if test="payTime != null">
+		payTime = #{payTime},
+	</if>
+	<if test="completeTime != null ">
+		completeTime = #{completeTime},
+	</if>
+	<if test="applyTime != null">
+		applyTime = #{applyTime},
+	</if>
+	<if test="note != null and note != ''">
+		note = #{note},
+	</if>
+	<if test="payType != null">
+		payType = #{payType},
+	</if>
+	<if test="goodsCount != null">
+		goodsCount = #{goodsCount},
+	</if>
+	<if test="expectedTime != null">
+		expectedTime = #{expectedTime},
+	</if>
+	<if test="receivingPhone != null and receivingPhone != ''">
+		receivingPhone = #{receivingPhone},
+	</if>
+	<if test="receivingName != null and receivingName != ''">
+		receivingName = #{receivingName},
+	</if>
+	<if test="receivingAddress != null and receivingAddress != ''">
+		receivingAddress = #{receivingAddress},
+	</if>
+	<if test="intervention != null">
+		intervention = #{intervention},
+	</if>
+	<if test="handleTime != null">
+		handleTime = #{handleTime},
+	</if>
+	</trim> where dmId=#{dmId}
+</update>
+
+<!-- 根据id查询 订单对应商品 -->
+<select id="findVo" resultType="com.qtz.ht.order.spi.order.vo.SupermarketOrder" parameterType="Object">
+	select <include refid="Base_Column_StringList" /> 
+	 from supermarket_order  where dmId = #{dmId}
+</select>
+
+<!-- 订单对应商品 列表总数 -->
+<select id="queryCount" resultType="java.lang.Integer"  parameterType="Object">
+	select count(1) from supermarket_order 
+	<where>
+		1=1
+		<if test="orderStatus != null ">
+			and orderStatus = #{orderStatus}
+		</if>
+		
+		<if test="receivingPhone != null and receivingPhone != ''">
+			and receivingPhone = #{receivingPhone}
+		</if>
+		<if test="receivingName != null and receivingName != ''">
+			and receivingName = #{receivingName}
+		</if>
+		<if test="receivingAddress != null and receivingAddress != ''">
+			<bind name="addr" value="'%'+receivingAddress+'%'"/>
+			and receivingAddress = #{addr}
+		</if>
+		<if test="dmId != null">
+			and dmId = #{dmId}
+		</if>
+		<if test="orderStartTime != null">
+			and crtime &gt;= #{orderStartTime}
+		</if>
+		<if test="orderEndTime != null">
+			and crtime &lt;= #{orderEndTime}
+		</if>
+		<if test="payStartTime != null">
+			and payTime &gt;= #{payStartTime}
+		</if>
+		<if test="sellerId != null">
+			and sellerId = #{sellerId}
+		</if>
+		<if test="userId != null">
+			and userId = #{userId}
+		</if>
+		<if test="storageId != null">
+			and storageId = #{storageId}
+		</if>
+		
+		<if test="consumeType != null">
+			and consumeType = #{consumeType}
+		</if>
+		<if test="orderType != null">
+			and orderType = #{orderType}
+		</if>
+	</where>
+</select>
+
+<!-- 分页查询订单对应商品列表 -->
+<select id="queryList" resultType="com.qtz.ht.order.spi.order.vo.SupermarketOrder" parameterType="Object">
+	select 
+	<include refid="Base_Column_StringList"/>
+	from supermarket_order 
+	<where>
+		1=1
+		<if test="orderStatus != null">
+			and orderStatus = #{orderStatus}
+		</if>
+		
+		<if test="receivingPhone != null and receivingPhone != ''">
+			and receivingPhone = #{receivingPhone}
+		</if>
+		<if test="receivingName != null and receivingName != ''">
+			and receivingName = #{receivingName}
+		</if>
+		<if test="receivingAddress != null and receivingAddress != ''">
+			<bind name="addr" value="'%'+receivingAddress+'%'"/>
+			and receivingAddress = #{addr}
+		</if>
+		<if test="dmId != null and dmId != ''">
+			and dmId = #{dmId}
+		</if>
+		<if test="orderStartTime != null">
+			and crtime &gt;= #{orderStartTime}
+		</if>
+		<if test="orderEndTime != null">
+			and crtime &lt;= #{orderEndTime}
+		</if>
+		<if test="payStartTime != null">
+			and payTime &gt;= #{payStartTime}
+		</if>
+		<if test="sellerId != null">
+			and sellerId = #{sellerId}
+		</if>
+		<if test="userId != null">
+			and userId = #{userId}
+		</if>
+		<if test="storageId != null">
+			and storageId = #{storageId}
+		</if>
+		
+		<if test="interventionType != null and interventionType != 3">
+			and intervention = #{intervention}
+		</if>
+		<if test="interventionType != null and interventionType == 3">
+			and intervention in (1,2)
+		</if>
+		<if test="consumeType != null">
+			and consumeType = #{consumeType}
+		</if>
+		<if test="orderType != null">
+			and orderType = #{orderType}
+		</if>
+		<if test="mysqlQueryCondition != null and mysqlQueryCondition != ''" >
+      		 ${mysqlQueryCondition}
+    	</if>
+	</where>
+   
+</select>
+
+
+<!-- 查询订单对应商品列表 -->
+<select id="findList" resultType="com.qtz.ht.order.spi.order.vo.SupermarketOrder"  parameterType="Object">
+	select 
+	<include refid="Base_Column_List"/>
+		from supermarket_order
+	<include refid="Example_Where_Clause"/>
+</select>
+
+
+<update id="physicalIntervention" parameterType="java.util.Map">
+	update supermarket_order set intervention = #{intervention} where applyTime &lt; #{applyTime} and orderStatus = #{orderStatus} and intervention = 0
+</update>
+
+
+<select id="querySupermarkerByOrderId" resultType="com.qtz.ht.order.spi.order.vo.SupermarketOrder" parameterType="com.qtz.ht.order.spi.order.vo.SupermarketOrder">
+	select <include refid="Base_Column_List"/> from supermarket_order where 1=1
+	
+	<if test="dmId != null">
+		and dmId = #{dmId}
+	</if>
+	<if test="batchId != null">
+		and batchId = #{batchId}
+	</if>
+</select>
+
+<update id="updateOrderById">
+	update supermarket_order set deduction_price = #{deductionPrice},discount_percent = #{discountPercent},constant_name = #{constantName},constant_key = #{constantKey},orderPrice=#{paymentPrice} where dm_id = #{dmId}
+</update>
+</mapper>

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtz.ht.order.service.userwallet.dao.UserConsumptionFlowDao">
+<!-- 开启缓存 -->
+<cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
+	<!-- Result Map com.qtz.member.spi.userwallet.vo.UserConsumptionFlow -->
+	<resultMap id="BaseResultMap" type="com.qtz.member.spi.userwallet.dto.UserConsumptionFlow">
+		<result column="dmId" property="dmId" />
+		<result column="userId" property="userId" />
+		<result column="saleOrdersId" property="saleOrdersId" />
+		<result column="amount" property="amount" />
+		<result column="sourceType" property="sourceType" />
+		<result column="type" property="type" />
+		<result column="createOn" property="createOn" />
+		<result column="predictDate"  property="predictDate"/> 
+	</resultMap>
+	<resultMap id="UserWalletReturnModel" type="com.qtz.member.spi.userwallet.model.UserWalletReturnModel">
+		<result column="userId" property="userId" />
+		<result column="totalAmount" property="totalAmount" />
+		<result column="sourceType" property="sourceType" />
+	</resultMap>
+
+	<resultMap type="com.qtz.member.spi.userwallet.model.UserConsumptionFlowGroupOut" id="UserConsumptionFlowGroupOut">
+		<result column="rDay" property="date" />
+		<result column="rCount" property="message" />
+		<result column="rAmount" property="amount" />
+	</resultMap>
+
+
+	<!-- UserConsumptionFlow table all fields -->
+	<sql id="Base_Column_List">
+		t.dmId,t.saleOrdersId,t.amount,t.sourceType,t.createOn,t.sourceType as type,0 as predictDate
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		<where>
+			<if test="dmId != null  "> and t.dmId=#{dmId}
+			</if>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+			<if test="saleOrdersId != null  and saleOrdersId != '' ">
+				and t.saleOrdersId=#{saleOrdersId}
+			</if>
+			<if test="amount != null  ">
+				and t.amount=#{amount}
+			</if>
+			<if test="sourceType != null  ">
+				and t.sourceType=#{sourceType}
+			</if>
+			<if test="createOn != null  ">
+				and t.createOn=#{createOn}
+			</if>
+			<if test="dateQuery != null">
+				and
+				CONCAT_WS('-',year(t.statisticsDate),month(t.statisticsDate),day(t.statisticsDate))=#{dateQuery}
+			</if>
+		</where>
+	</sql>
+<!-- 查询条件 -->
+	<sql id="Example_Where_Clause_for_total">
+		<where>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+			<if test="sourceType != null  ">
+				and t.sourceType=#{sourceType}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" 
+		useGeneratedKeys="true" keyProperty="id">] -->
+	<insert id="addVo" parameterType="Object">
+		insert into
+		uw_userconsumptionflow(dmId,userId,saleOrdersId,amount,sourceType,createOn,statisticsDate)
+		values(#{dmId},#{userId},#{saleOrdersId},#{amount},#{sourceType},#{createOn},#{statisticsDate})
+	</insert>
+	<!--批量插入记录 -->
+	<insert id="addList" parameterType="java.util.List">
+		insert into
+		uw_userconsumptionflow(dmId,userId,saleOrdersId,amount,sourceType,createOn)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(
+			#{item.dmId},#{item.userId},#{item.saleOrdersId},#{item.amount},#{item.sourceType},#{item.createOn}
+			)
+		</foreach>
+	</insert>
+
+
+	<!-- 删除记录 -->
+	<delete id="delId" parameterType="Object">
+		delete from uw_userconsumptionflow
+		where dmId = #{dmId}
+	</delete>
+	<!--批量删除 -->
+	<delete id="delIds" parameterType="java.lang.String">
+		delete from uw_userconsumptionflow where dmId in
+		<foreach item="idItem" collection="array" open="(" separator=","
+			close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	<!--批量删除 -->
+	<delete id="delList" parameterType="java.util.List">
+		delete from uw_userconsumptionflow where dmId in
+		<foreach item="idItem" collection="list" index="index" open="("
+			separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+
+	<!-- 根据id，修改记录 -->
+	<update id="modVo" parameterType="Object">
+		update uw_userconsumptionflow set
+		userId=#{userId},saleOrdersId=#{saleOrdersId},amount=#{amount},sourceType=#{sourceType},createOn=#{createOn}
+		where dmId=#{dmId}
+	</update>
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="modVoNotNull" parameterType="Object">
+		update uw_userconsumptionflow set
+		<trim suffixOverrides=",">
+			<if test="userId != null  ">
+				userId=#{userId},
+			</if>
+			<if test="saleOrdersId != null  and saleOrdersId != '' ">
+				saleOrdersId=#{saleOrdersId},
+			</if>
+			<if test="amount != null  ">
+				amount=#{amount},
+			</if>
+			<if test="sourceType != null  ">
+				sourceType=#{sourceType},
+			</if>
+			<if test="createOn != null  ">
+				createOn=#{createOn},
+			</if>
+		</trim>
+		where dmId=#{dmId}
+	</update>
+
+
+
+	<!-- 根据id查询 用户消费流水 -->
+	<select id="findVo" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from uw_userconsumptionflow t where t.dmId = #{dmId}
+	</select>
+
+	<!-- 用户消费流水 列表总数 -->
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="Object">
+		select count(1) from uw_userconsumptionflow t
+		<include refid="Example_Where_Clause" />
+	</select>
+	
+	<!-- 得到某人消费的统计 -->
+	<select id="findSumAmount" resultType="java.lang.Double"
+		parameterType="Object">
+		select SUM(amount) from uw_userconsumptionflow t where t.sourceType=#{sourceType} and t.userId=#{userId}
+		
+	</select>
+	<select id="findTotalAmount" resultType="java.lang.Double"
+		parameterType="Object">
+		select SUM(amount) from uw_userconsumptionflow t
+		<include refid="Example_Where_Clause" />
+	</select>
+	<!-- 按用户分组查询个人消费流水list 按user 与tpye分组 -->
+	<select id="findTotalAmountByGroup" resultType="com.qtz.member.spi.userwallet.model.UserWalletReturnModel"
+		parameterType="Object">
+		select sum(t.amount)totalAmount,t.userId,t.sourceType from uw_userconsumptionflow t where t.userId IN  
+		<foreach item="item" index="index" collection="userIdList"
+      		open="(" separator="," close=")">
+       		 #{item}
+  		</foreach>
+  		GROUP BY t.userId,t.sourceType
+	</select>
+
+	<!-- 分页查询用户消费流水列表 -->
+	<select id="queryList" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from uw_userconsumptionflow t
+		<include refid="Example_Where_Clause" />
+		<if test="mysqlQueryCondition != null and mysqlQueryCondition != ''">
+			${mysqlQueryCondition}
+		</if>
+	</select>
+
+	<select id="findList" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from uw_userconsumptionflow t
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<select id="findListByGroup" resultMap="UserConsumptionFlowGroupOut"
+		parameterType="Object">
+		select
+		CONCAT_WS('-',year(r.statisticsDate),month(r.statisticsDate),day(r.statisticsDate))
+		as rDay,
+		count(r.dmId) as rCount,
+		sum(r.amount) as rAmount
+		from
+		uw_userconsumptionflow as r
+		where r.userId = #{userId}
+		and
+		CONCAT_WS('-',year(r.statisticsDate),month(r.statisticsDate))=#{dateQuery}
+		group by
+		CONCAT_WS('-',year(r.statisticsDate),month(r.statisticsDate),day(r.statisticsDate))
+		order by
+		CONCAT_WS('-',year(r.statisticsDate),month(r.statisticsDate),day(r.statisticsDate))
+		desc
+	</select>
+
+
+</mapper>

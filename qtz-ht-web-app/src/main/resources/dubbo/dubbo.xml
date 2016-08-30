@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans        
+    http://www.springframework.org/schema/beans/spring-beans.xsd        
+    http://code.alibabatech.com/schema/dubbo        
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	<!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->
+	<dubbo:application name="qtz-ht-web-app"/>
+	<!-- 使用multicast广播注册中心暴露发现服务地址 -->
+	<dubbo:registry protocol="zookeeper" address="${zookeeper.servers}" />
+	<!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
+	<!-- 消费者,需要根据具体情况在reference上来设置 -->
+    <dubbo:consumer version="1.0.0" check="false"/>
+	<!-- 登录 -->	
+	<dubbo:reference interface="com.qtz.member.spi.session.service.SessionService" id="sessionServiceImpl" check="false" />
+	<!-- 地区 -->
+	<dubbo:reference interface="com.qtz.member.spi.user.service.RegionService" id="regionServiceImpl"  check="false"/>
+	<!-- 系统配置服务 -->
+    <dubbo:reference interface="com.qtz.ht.spi.system.service.HtActivityService" id="htActivityServiceImpl" />
+	<dubbo:reference interface="com.qtz.ht.spi.system.service.HtFloorGoodsService" id="htFloorGoodsServiceImpl" />
+	<dubbo:reference interface="com.qtz.ht.spi.system.service.HtFloorService" id="htFloorServiceImpl"  />
+    <dubbo:reference interface="com.qtz.ht.spi.system.service.HtCategoryService" id="htCategoryServiceImpl"  />
+	<!-- 订单配置 -->
+	<dubbo:reference interface="com.qtz.ht.order.spi.order.service.OrigOrderService" id="origOrderServiceImpl" />
+	<!-- 用户 -->
+	<dubbo:reference interface="com.qtz.ht.spi.system.service.HtBannerService" id="htBannerServiceImpl"  />
+	<!-- 商品-->
+	<dubbo:reference interface="com.qtz.ht.spi.good.service.HtGoodCateService" id="htGoodCateServiceImpl"  />
+	<dubbo:reference interface="com.qtz.ht.spi.good.service.HtGoodDescService" id="htGoodDescServiceImpl"  />
+	<dubbo:reference interface="com.qtz.ht.spi.good.service.HtGoodLogService" id="htGoodLogServiceImpl"  />
+	<dubbo:reference interface="com.qtz.ht.spi.good.service.HtGoodsAlbumService" id="htGoodsAlbumServiceImpl"  />
+	<dubbo:reference interface="com.qtz.ht.spi.good.service.HtStaffGoodsService" id="htStaffGoodsServiceImpl"  />
+	<dubbo:reference interface="com.qtz.ht.spi.good.service.HtGoodCateAssoService"   id="htGoodCateAssoServiceImpl"  />
+	<dubbo:reference interface="com.qtz.ht.spi.system.service.HtCartService"   id="htCartServiceImpl"  />
+	<!-- 海陶订单 -->
+	<dubbo:reference interface="com.qtz.ht.order.spi.order.service.OrigOrderService" id="origOrderService"  check="false"/>
+	<dubbo:reference interface="com.qtz.ht.order.spi.message.service.MessageService" id="messageService"  check="false"/>
+   	<!-- 用户认证信息服务  -->
+	<dubbo:reference interface="com.qtz.member.spi.authentication.service.AuthenService" id="authenServiceImpl" check="false" />
+   	    <!-- 抢车活动服务 -->
+    <dubbo:reference interface="com.qtz.ht.spi.order.service.TransferActivityService" id="transferActivityService" />
+</beans>

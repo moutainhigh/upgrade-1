@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtz.ht.order.service.userwallet.dao.ReconciliationRecordDao">
+<!-- 开启缓存 -->
+<cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
+	<!-- Result Map com.qtz.member.spi.userwallet.vo.ReconciliationRecord -->
+	<resultMap id="BaseResultMap" type="com.qtz.member.spi.userwallet.dto.ReconciliationRecord">
+		<result column="dmId" property="dmId" />
+		<result column="userId" property="userId" />
+		<result column="saleOrdersId" property="saleOrdersId" />
+		<result column="sourceType" property="sourceType" />
+		<result column="amount" property="amount" />
+		<result column="createOn" property="createOn" />
+		<result column="type" property="type" />
+		<result column="releaseDate" property="releaseDate" />
+		<result column="userType" property="userType" />
+	</resultMap>
+
+	<resultMap type="com.qtz.member.spi.userwallet.model.ReconciliationRecordGroupOut" id="ReconciliationRecordGroupOut">
+		<result column="rDay" property="date" />
+		<result column="rCount" property="message" />
+		<result column="rAmount" property="amount" />
+	</resultMap>
+
+	<resultMap id="UserWalletReturnModel" type="com.qtz.member.spi.userwallet.model.UserWalletReturnModel">
+		<result column="userId" property="userId" />
+		<result column="totalAmount" property="totalAmount" />
+		<result column="sourceType" property="sourceType" />
+		<result column="userType" property="userType" />
+	</resultMap>
+	<!-- ReconciliationRecord table all fields -->
+	<sql id="Base_Column_List">
+		t.dmId,t.userId,t.saleOrdersId,t.sourceType,t.amount,t.createOn,t.releaseDate,t.userType
+	</sql>
+
+	<sql id="Base_Column_List1">
+		t.dmId,t.userId,t.saleOrdersId,t.sourceType as
+		type,t.amount,t.createOn,t.sourceType,t.releaseDate,t.userType
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		<where>
+			<if test="dmId != null  "> and t.dmId=#{dmId}
+			</if>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+			<if test="saleOrdersId != null  and saleOrdersId != '' ">
+				and t.saleOrdersId=#{saleOrdersId}
+			</if>
+			<if test="sourceType != null  ">
+				and t.sourceType=#{sourceType}
+			</if>
+			<if test="amount != null  ">
+				and t.amount=#{amount}
+			</if>
+			<if test="createOn != null  ">
+				and t.createOn=#{createOn}
+			</if>
+			<if test="userType != null  ">
+				and t.userType=#{userType}
+			</if>
+			<if test="dateQuery != null">
+				and
+				(
+					(CONCAT_WS('-',year(t.statisticsDate),month(t.statisticsDate),day(t.statisticsDate))=#{dateQuery})
+						or
+					DATE_FORMAT(t.statisticsDate,'%Y-%c-%d')=#{dateQuery}
+				)
+			</if>
+			<if test="orderStatus != null">
+				and t.orderStatus = #{orderStatus}
+			</if>
+			<if test="releaseDateLe != null">
+				and t.releaseDate &lt;= #{releaseDateLe}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="Example_Where_Clause_FindList">
+		<where>
+			<if test="dmId != null  "> and t.dmId=#{dmId}
+			</if>
+			<if test="userId != null  ">
+				and t.userId=#{userId}
+			</if>
+			<if test="saleOrdersId != null  and saleOrdersId != '' ">
+				and t.saleOrdersId=#{saleOrdersId}
+			</if>
+			<if test="sourceType != null  ">
+				and t.sourceType=#{sourceType}
+			</if>
+			<if test="amount != null  ">
+				and t.amount=#{amount}
+			</if>
+			<if test="createOn != null  ">
+				and t.createOn=#{createOn}
+			</if>
+			<if test="releaseDateLe != null">
+				and t.releaseDate &lt;= #{releaseDateLe}
+			</if>
+		</where>
+	</sql>
+	
+
+	<!-- 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" 
+		useGeneratedKeys="true" keyProperty="id">] -->
+	<insert id="addVo" parameterType="Object">
+		insert into
+		uw_reconciliationrecord(dmId,userId,saleOrdersId,sourceType,amount,createOn,statisticsDate,releaseDate,userType)
+		values(#{dmId},#{userId},#{saleOrdersId},#{sourceType},#{amount},#{createOn},#{statisticsDate},#{releaseDate},#{userType})
+	</insert>
+	<!--批量插入记录 -->
+	<insert id="addList" parameterType="java.util.List">
+		insert into
+		uw_reconciliationrecord(dmId,userId,saleOrdersId,sourceType,amount,createOn)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(
+			#{item.dmId},#{item.userId},#{item.saleOrdersId},#{item.sourceType},#{item.amount},#{item.createOn}
+			)
+		</foreach>
+	</insert>
+
+
+	<!-- 删除记录 -->
+	<delete id="delId" parameterType="Object">
+		delete from
+		uw_reconciliationrecord where dmId = #{dmId}
+	</delete>
+	<!--批量删除 -->
+	<delete id="delIds" parameterType="java.lang.String">
+		delete from uw_reconciliationrecord where dmId in
+		<foreach item="idItem" collection="array" open="(" separator=","
+			close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	<!--批量删除 -->
+	<delete id="delList" parameterType="java.util.List">
+		delete from uw_reconciliationrecord where dmId in
+		<foreach item="idItem" collection="list" index="index" open="("
+			separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+
+	<!-- 根据id，修改记录 -->
+	<update id="modVo" parameterType="Object">
+		update uw_reconciliationrecord set
+		userId=#{userId},saleOrdersId=#{saleOrdersId},sourceType=#{sourceType},amount=#{amount},createOn=#{createOn}
+		where dmId=#{dmId}
+	</update>
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="modVoNotNull" parameterType="Object">
+		update uw_reconciliationrecord set
+		<trim suffixOverrides=",">
+			<if test="userId != null  ">
+				userId=#{userId},
+			</if>
+			<if test="saleOrdersId != null  and saleOrdersId != '' ">
+				saleOrdersId=#{saleOrdersId},
+			</if>
+			<if test="sourceType != null  ">
+				sourceType=#{sourceType},
+			</if>
+			<if test="amount != null  ">
+				amount=#{amount},
+			</if>
+			<if test="createOn != null  ">
+				createOn=#{createOn},
+			</if>
+			<if test="orderStatus != null  ">
+				orderStatus=#{orderStatus},
+			</if>
+		</trim>
+		where dmId=#{dmId}
+	</update>
+
+
+
+	<!-- 根据id查询 钱包对账中记录 -->
+	<select id="findVo" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from uw_reconciliationrecord t where t.dmId = #{dmId}
+	</select>
+
+	<!-- 钱包对账中记录 列表总数 -->
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="Object">
+		select count(1) from uw_reconciliationrecord t
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<!-- 分页查询钱包对账中记录列表 -->
+	<select id="queryList" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List1" />
+		from uw_reconciliationrecord t
+		<include refid="Example_Where_Clause" />
+		<if test="mysqlQueryCondition != null and mysqlQueryCondition != ''">
+			${mysqlQueryCondition}
+		</if>
+	</select>
+	<!-- 按用户分组查询提现流水list 按userid sourceTypoe status 分组 -->
+	<select id="findTotalAmountByGroup" resultType="com.qtz.member.spi.userwallet.model.UserWalletReturnModel"
+		parameterType="Object">
+		select sum(t.amount)totalAmount,t.userId,t.sourceType,t.userType from uw_reconciliationrecord t where t.userId in     
+		<foreach item="item" index="index" collection="userIdList"
+      		open="(" separator="," close=")">
+       		 #{item}
+  		</foreach>
+  		GROUP BY t.userId,t.sourceType,t.userType
+	</select>
+
+	<!-- 查询钱包对账中记录列表 -->
+	<select id="findList" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from uw_reconciliationrecord t
+		<include refid="Example_Where_Clause_FindList" />
+		order by t.createOn desc
+	</select>
+
+	<!-- 分类查询对账中记录 -->
+	<select id="findListByGroup" resultMap="ReconciliationRecordGroupOut"
+		parameterType="Object">
+		select
+		CONCAT_WS('-',year(r.statisticsDate),month(r.statisticsDate),day(r.statisticsDate))
+		as rDay,
+		count(r.dmId) as rCount,
+		sum(r.amount) as rAmount
+		from
+		uw_reconciliationrecord as r
+		where 
+		r.userId = #{userId}
+		and r.userType = #{userType}
+		and CONCAT_WS('-',year(r.statisticsDate),month(r.statisticsDate))=#{dateQuery}
+		group by
+		CONCAT_WS('-',year(r.statisticsDate),month(r.statisticsDate),day(r.statisticsDate))
+		order by
+		DATE_FORMAT(r.statisticsDate,'%Y-%m-%d') desc
+	</select>
+	
+	<select id="sumAmount" resultType="java.lang.Double" parameterType="Object">
+		select sum(t.amount) from uw_reconciliationrecord as t 
+		<where>
+			<if test="userId != null">
+				and t.userId = #{userId}
+			</if>
+			<if test="userType != null">
+				and t.userType = #{userType}
+			</if>
+		</where>
+	</select>
+
+</mapper>
+
+
+
+
+
